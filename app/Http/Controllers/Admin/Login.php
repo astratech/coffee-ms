@@ -35,6 +35,11 @@ class Login extends Controller{
 
 			$r = DB::select("SELECT * FROM admin WHERE username='$username' AND password='$password'");
 	    	if(count($r) > 0){
+                
+                foreach ($r as $d){
+                    $_SESSION['coffee_admin_logged']['id'] = $d->id;
+                }
+
 	    		$url = url('/admin/staffs');
                 header("Location: $url");
                 exit();

@@ -8,26 +8,7 @@ use DB;
 
 session_start();
 class Site extends Model{
-    public static function get_users(){
-    	// return DB::select("SELECT * FROM users");
-    	return Schema::getColumnListing("users");
-    }
-
-    public static function get_user($id){
-    	$r = DB::select("SELECT * FROM users WHERE id='$id'");
-    	$output = [];
-    	if(count($r) > 0){
-    		$output = $r;
-    	}
-    	else{
-    		 foreach(Schema::getColumnListing("users") as $d => $value) {
-                $output[$value] = null;
-            }
-    	}
-
-    	$output = json_encode($output);
-        return json_decode($output); 
-    }
+  
 
     public static function fil_email($str){
         $val = preg_replace("/[^A-Za-z0-9_.-@]/", "", $str);

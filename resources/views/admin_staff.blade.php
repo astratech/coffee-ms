@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="www.astratech.com.ng">
     <meta name="author" content="Astratech NG">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/plugins/images/favicon.png">
     <title>Coffee-Ms</title>
     <!-- Bootstrap Core CSS -->
@@ -21,11 +22,13 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jq-3.2.1/jq-3.2.1/dt-1.10.16/b-1.4.2/b-html5-1.4.2/b-print-1.4.2/kt-2.3.2/r-2.2.0/rr-1.2.3/sl-1.2.3/datatables.min.css"/>
 
      
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jq-3.2.1/jq-3.2.1/dt-1.10.16/b-1.4.2/b-html5-1.4.2/b-print-1.4.2/kt-2.3.2/r-2.2.0/rr-1.2.3/sl-1.2.3/datatables.min.js"></script>
+
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
     <!-- Custom Theme JavaScript -->
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
@@ -53,14 +56,46 @@
            
             $(".editBtn").click(function (e) {
                 e.preventDefault();
-                // alert("Sfddf");
                 try{
-                    // var d = $(this).data('all');
+                    var d = $(this).data('all');
 
-                    // $("#editModal [name='staff_id']").val(d.id);
-                    // $("#editModal .modal-title").text("Edit Staff: "+d.uq_id);
+                    $("#editModal [name='staff_id']").val(d.id);
+                    $("#editModal [name='name']").val(d.name);
+                    $("#editModal [name='dept']").val(d.dept);
+                    $("#editModal [name='email']").val(d.email);
+                    $("#editModal .modal-title").text("Edit Staff: "+d.uq_id);
                     
-                    $("#addModal").modal('show');
+                    $("#editModal").modal('show');
+                }
+                catch(err){
+                    alert(err);
+                }
+            });
+
+            $(".dltBtn").click(function (e) {
+                e.preventDefault();
+                try{
+                    var d = $(this).data('all');
+
+                    $("#appModal [name='staff_id']").val(d.id);
+                    $("#appModal .modal-title").text("Delete Staff: "+d.uq_id);
+                    
+                    $("#appModal").modal('show');
+                }
+                catch(err){
+                    alert(err);
+                }
+            });
+
+            $(".change-password").click(function (e) {
+                e.preventDefault();
+                try{
+                    var d = $(this).data('all');
+
+                    $("#passModal [name='staff_id']").val(d.id);    
+                    $("#passModal .modal-title").text("Change Staff Password: "+d.uq_id);                
+                    
+                    $("#passModal").modal('show');
                 }
                 catch(err){
                     alert(err);
@@ -83,7 +118,10 @@
                 <div class="top-left-part"><a class="logo" href="index.html"><b><img src="{{ URL::asset('site/plugins/images/logo.png') }}" alt="" style="width: 45px;" /></b><span class="hidden-xs">Coffee-MS</span></a></div>
                 <ul class="nav navbar-top-links navbar-right pull-right">
                     <li>
-                        {{-- <a class="profile-pic" href="#"> <img src="{{ URL::asset('site/plugins/images/users/varun.jpg') }}" alt="user-img" width="36" class="img-circle"><b class="hidden-xs"> </b> </a> --}}
+                    	<button type='submit' name='logout' form='form-logout' class="btn btn-primary" style="margin-top: 10px; margin-right: 30px;"><span class="hide-menu"><i class="fa fa-sign-out"></i> Logout</span></button>
+                    	<form action='{{ url()->current() }}' method='POST' id='form-logout'>
+                    		<input type="hidden" name="_token" value="{{ csrf_token() }}">
+                    	</form>
                     </li>
                 </ul>
             </div>
@@ -98,11 +136,7 @@
                     <li style="padding: 10px 0 0;">
                         <a href="staffs" class="waves-effect"><i class="fa fa-users fa-fw" aria-hidden="true"></i><span class="hide-menu">Staffs</span></a>
                     </li>
-                   
-                    <li>
-                        <a href="login" class="waves-effect"><i class="fa fa-sign-out fa-fw" aria-hidden="true"></i><span class="hide-menu"> Logout</span></a>
-                    </li>
-                
+
                 </ul>
             </div>
         </div>
@@ -137,11 +171,7 @@
                                         <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"> 
                                         </div>
                                     </div>
-                                    @php
-                                     $c = 100;
-                                     $p = $c * 100;
-                                     @endphp
-                                    {{ $p }}
+        
                                 </div>
                             </div>
                         </div>
@@ -152,6 +182,7 @@
                 <!--row -->
                 <div class="row">
                     <div class="col-sm-12">
+
                         @if(isset($_SESSION['notification']))
 
                             {!! $_SESSION['notification'] !!}
@@ -160,8 +191,11 @@
 
                         @endif
                         <div class="white-box">
-                                                        
+                                                      
                             <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Staff</a>
+                            <br>                           
+                            <br> 
+
                             <div class="table-responsive">
                                 <table class="table" id="cs-data-table">
                                     <thead>
@@ -175,6 +209,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+
                                         @if(count(DB::select("SELECT * FROM staffs")) > 0)
                                            @foreach (DB::select("SELECT * FROM staffs") as $r)
                                                 <tr>
@@ -182,10 +217,13 @@
                                                     <td>{{ $r->uq_id }}</td>
                                                     <td>{{ $r->dept }}</td>
                                                     <td>{{ $r->email }}</td>
-                                                    <td>{{ App\Site::decode_password($r->password) }}</td>
                                                     <td>
-                                                        <button class="btn btn-default btn-sm editBtn" data-all="{!! (json_encode($r)) !!}">Edit</button>
-                                                        <button class="btn btn-danger btn-sm dltBtn" data-all="{!! (json_encode($r)) !!}">Delete</button>
+                                                    	<p>{{ App\Site::decode_password($r->password) }}</p>
+                                                    	<button class="btn btn-info btn-xs change-password" data-all="{{ (json_encode($r)) }}">Change Password</button>
+                                                    </td>
+                                                    <td>
+                                                        <button class="btn btn-default btn-sm editBtn" data-all="{{ (json_encode($r)) }}">Edit</button>
+                                                        <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
                                                     </td>
                                                 </tr>
                                            @endforeach
@@ -209,85 +247,216 @@
 
 
     <div id="addModal" class="modal fade" role="dialog">
-      <div class="modal-dialog">
+     	<div class="modal-dialog">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	        	<div class="modal-header">
+	            	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	            	<h4 class="modal-title">Add Staff</h4>
+	        	</div>
+	        	
+	            <div class="modal-body">
+	                <div class="row">
+	                	<form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+		            		{{ csrf_field() }}
+		                    <div class="col-md-12">                        
+		                        <div class="form-group">
+		                            <div class="col-sm-12">
+		                                <label>Staff Name</label>
+		                                <input type="text" name="name" class="form-control">
+		                            </div>
+		                        </div>
 
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Add Staff</h4>
-        </div>
-        <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
-            {{ csrf_field() }}
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-md-12">                        
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <label>Staff Name</label>
-                            <input type="text" name="name" class="form-control">
-                        </div>
-                    </div>
+		                        <div class="form-group">
+		                            <div class="col-sm-12">
+		                                <label>Department</label>
+		                                <input type="text" name="dept" class="form-control">
+		                            </div>
+		                        </div>
 
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <label>Department</label>
-                            <input type="text" name="dept" class="form-control">
-                        </div>
-                    </div>
+		                        <div class="form-group">
+		                            <div class="col-sm-12">
+		                                <label>Email</label>
+		                                <input type="text" name="email" class="form-control">
+		                            </div>
+		                        </div>
 
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <label>Email</label>
-                            <input type="text" name="email" class="form-control">
-                        </div>
-                    </div>
+		                        <div class="form-group">
+		                            <div class="col-sm-12">
+		                                <label>Password</label>
+		                                <input type="text" name="password" class="form-control" value="{{ App\Site::gen_token() }}" readonly>
+		                            </div>
+		                        </div>
 
-                    <div class="form-group">
-                        <div class="col-sm-12">
-                            <label>Password</label>
-                            <input type="text" name="password" class="form-control" value="{{ App\Site::gen_token() }}" readonly>
-                        </div>
-                    </div>
+		                        <div class="form-group">
+		                   			<div class="col-sm-12">
+				                        <input type="submit" name="create" value="Submit" class="btn btn-success">
+				                    </div>
+				                </div>
+		            		</div>
+						</form>
+	                </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	            </div>
+	        	
+	        </div>
 
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <input type="submit" name="create" value="Submit" class="btn btn-success">
-                </div>
-            </div>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-        </form>
-    </div>
+		</div>
+	</div>
 
-</div>
-</div>
+	<div id="editModal" class="modal fade" role="dialog">
+     	<div class="modal-dialog">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	        	<div class="modal-header">
+	            	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	            	<h4 class="modal-title">Edit Staff</h4>
+	        	</div>
+	        	
+	            <div class="modal-body">
+	                <div class="row">
+	                	<form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+		                    <div class="col-md-12">                        
+		                        <div class="form-group">
+		                            <div class="col-sm-12">
+		                                <label>Staff Name</label>
+		                                <input type="text" name="name" class="form-control">
+		                            </div>
+		                        </div>
 
-<div id="editModal" class="modal fade" role="dialog">
-          <div class="modal-dialog">
+		                        <div class="form-group">
+		                            <div class="col-sm-12">
+		                                <label>Department</label>
+		                                <input type="text" name="dept" class="form-control">
+		                            </div>
+		                        </div>
 
-            <!-- Modal content-->
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Modal Header</h4>
-              </div>
-              <div class="modal-body">
-                <p>Some text in the modal.</p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              </div>
-            </div>
+		                        <div class="form-group">
+		                            <div class="col-sm-12">
+		                                <label>Email</label>
+		                                <input type="text" name="email" class="form-control">
+		                            </div>
+		                        </div>
 
-          </div>
-        </div>
+		                        <div class="form-group">
+		                            <div class="col-sm-12">
+		                                <input type="hidden" name="staff_id">
+		                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+		                            </div>
+		                        </div>
 
-    
+		                        <div class="form-group">
+		                   			<div class="col-sm-12">
+				                        <input type="submit" name="update" value="Update Details" class="btn btn-success">
+				                    </div>
+				                </div>
+		            		</div>
+						</form>
+	                </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	            </div>
+	        	
+	        </div>
+
+		</div>
+	</div>
+
+	<div id="passModal" class="modal fade" role="dialog">
+     	<div class="modal-dialog">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	        	<div class="modal-header">
+	            	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	            	<h4 class="modal-title">Change Staff Password</h4>
+	        	</div>
+	        	
+	            <div class="modal-body">
+	                <div class="row">
+	                	<form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+		                    <div class="col-md-12">                        
+
+		                        <div class="form-group">
+		                            <div class="col-sm-12">
+		                                <label>New Password</label>
+		                                <input type="password" name="password" class="form-control">
+		                            </div>
+		                        </div>
+
+		                        <div class="form-group">
+		                            <div class="col-sm-12">
+		                                <label>Retype New Password</label>
+		                                <input type="password" name="rpassword" class="form-control">
+		                            </div>
+		                        </div>
+
+		                        <div class="form-group">
+		                            <div class="col-sm-12">
+		                                <input type="hidden" name="staff_id">
+		                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+		                            </div>
+		                        </div>
+
+		                        <div class="form-group">
+		                   			<div class="col-sm-12">
+				                        <input type="submit" name="update_password" value="Change Password" class="btn btn-success">
+				                    </div>
+				                </div>
+		            		</div>
+						</form>
+	                </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	            </div>
+	        	
+	        </div>
+
+		</div>
+	</div>
+
+	<div id="appModal" class="modal fade" role="dialog">
+     	<div class="modal-dialog">
+	        <!-- Modal content-->
+	        <div class="modal-content">
+	        	<div class="modal-header">
+	            	<button type="button" class="close" data-dismiss="modal">&times;</button>
+	            	<h4 class="modal-title">Delete Staff</h4>
+	        	</div>
+	        	
+	            <div class="modal-body">
+	                <div class="row">
+	                	<form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+		                    <div class="col-md-12">                        
+		                    <p>You are about to delete a record <br><br>Are you sure of this?</p>
+		                        <div class="form-group">
+		                            <div class="col-sm-12">
+		                                <input type="hidden" name="staff_id">
+		                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+		                            </div>
+		                        </div>
+
+		                        <div class="form-group">
+		                   			<div class="col-sm-12">
+				                        <input type="submit" name="delete" value="Delete Staff" class="btn btn-success">
+				                    </div>
+				                </div>
+		            		</div>
+						</form>
+	                </div>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	            </div>
+	        	
+	        </div>
+
+		</div>
+	</div>
+
    
 
     

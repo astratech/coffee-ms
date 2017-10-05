@@ -19,5 +19,6 @@ Route::any('/', 'Login@index');
 Route::any('/login', 'Login@index');
 Route::any('/card/enc/{txt}', 'Card@enc');
 Route::any('/card/dec/{txt}', 'Card@dec');
+Route::any('/admin', 'Admin\Login@index');
 Route::any('/admin/login', 'Admin\Login@index');
 Route::any('/admin/staffs', 'Admin\Staffs@index');
