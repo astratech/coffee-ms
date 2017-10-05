@@ -20,46 +20,6 @@
                         <div class="white-box">
                             <div class="col-in row">
                                 <div class="col-md-6 col-sm-6 col-xs-6"> <i data-icon="E" class="linea-icon linea-basic"></i>
-                                    <h5 class="text-muted vb">Total Number of Customers</h5> </div>
-                                <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <h3 class="counter text-right m-t-15 text-danger">{{ count(App\Site::get_records('customers')) }}</h3> </div>
-                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <div class="progress">
-                                    
-                                        
-                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"> 
-                                        </div>
-                                    </div>
-        
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                        <div class="white-box">
-                            <div class="col-in row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <i data-icon="E" class="linea-icon linea-basic"></i>
-                                    <h5 class="text-muted vb">Total Number of Machines</h5> </div>
-                                <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <h3 class="counter text-right m-t-15 text-danger">{{ count(App\Site::get_records('machines')) }}</h3> </div>
-                                <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <div class="progress">
-                                    
-                                        
-                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"> 
-                                        </div>
-                                    </div>
-        
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                        <div class="white-box">
-                            <div class="col-in row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <i data-icon="E" class="linea-icon linea-basic"></i>
                                     <h5 class="text-muted vb">Total Number of Supplier</h5> </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6">
                                     <h3 class="counter text-right m-t-15 text-danger">{{ count(App\Site::get_records('suppliers')) }}</h3> </div>
@@ -75,6 +35,7 @@
                             </div>
                         </div>
                     </div>
+
 
                     <!-- /.col -->
                 </div>                
@@ -92,7 +53,7 @@
                         @endif
                         <div class="white-box">
                                                       
-                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Staff</a>
+                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Supplier</a>
                             <br>                           
                             <br> 
 
@@ -101,28 +62,22 @@
                                     <thead>
                                         <tr>
                                             <th>NAME</th>
-                                            <th>STAFF ID</th>
-                                            <th>DEPARTMENT</th>
-                                            <th>EMAIL</th>
-                                            <th>PASSWORD</th>
-                                            <th>LAST LOGIN</th>
+                                            <th>SUPPLIER ID</th>
+                                            <th>CONTACT INFO</th>
+                                            <th>DATE CREATED</th>
+                                            <th>CREATED BY</th>
                                             <th>ACTIONS</th>
                                         </tr>
                                     </thead>
                                     <tbody>
 
-                                        @if(count(DB::select("SELECT * FROM staffs")) > 0)
-                                           @foreach (DB::select("SELECT * FROM staffs") as $r)
+                                        @if(count(App\Site::get_records('suppliers')) > 0)
+                                           @foreach (App\Site::get_records('suppliers') as $r)
                                                 <tr>
                                                     <td>{{$r->name}}</td>
                                                     <td>{{ $r->uq_id }}</td>
-                                                    <td>{{ $r->dept }}</td>
-                                                    <td>{{ $r->email }}</td>
-                                                    <td>
-                                                        <p>{{ App\Site::decode_password($r->password) }}</p>
-                                                        <button class="btn btn-info btn-xs change-password" data-all="{{ (json_encode($r)) }}">Change Password</button>
-                                                    </td>
-                                                    <td>{{ is_null($r->last_login) ? '' : date("Y-m-d", strtotime($r->last_login)) }}</td>
+                                                    <td>{{ $r->contact_info }}</td>
+                                                    <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
                                                     <td>
                                                         <button class="btn btn-default btn-sm editBtn" data-all="{{ (json_encode($r)) }}">Edit</button>
                                                         <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>

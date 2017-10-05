@@ -7,6 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="www.astratech.com.ng">
 	<meta name="author" content="Astratech NG">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<link rel="icon" type="image/png" sizes="16x16" href="assets/plugins/images/favicon.png">
 	<title>Coffee-Ms</title>
 	<!-- Bootstrap Core CSS -->
@@ -37,10 +38,21 @@
 <body style="background-color: #795548!important; min-height: 1000px;">
 	<div class="container">
 		<div class="row" style="margin-top: 20%;">
+			<div class="col-md-6 col-md-offset-3 text-center" style="margin-bottom: 20px;">
+				<img src="{{ URL::asset('site/plugins/images/logo.png') }}" alt="" style="width: 45px;" /><span style="font-size: 20px; color: #fff;"> Coffee-MS</span>
+			</div>
 			<div class="col-md-6 col-md-offset-3" style="color: #444; background-color: #fff; border-radius: 3px; min-height: 300px;">
 				<form action="" method="POST" class="form-horizontal form-material">
+					{{ csrf_field() }}
 					<div class="col-md-12">
-						<h3 class="text-center">Login</h3>
+						<h3 class="text-center">Staff Login</h3>
+						@if(isset($_SESSION['notification']))
+
+                            {!! $_SESSION['notification'] !!}
+
+                            @php unset($_SESSION['notification']) @endphp
+
+                        @endif
 						<div class="form-group">
 							<div class="col-md-12">
 								<label>Staff Email</label>
@@ -63,7 +75,7 @@
 
 						<div class="form-group">
 							<div class="col-md-6">
-								<p>Forgot Password? Contact Admin</p>
+								<p><a href="{{ url('/admin') }}">Login as ADMIN??</a></p>
 							</div>
 						</div>
 					</div>

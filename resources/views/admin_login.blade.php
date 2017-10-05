@@ -7,6 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="www.astratech.com.ng">
 	<meta name="author" content="Astratech NG">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<link rel="icon" type="image/png" sizes="16x16" href="assets/plugins/images/favicon.png">
 	<title>Coffee-Ms</title>
 	<!-- Bootstrap Core CSS -->
@@ -77,7 +78,7 @@
 
 						<div class="form-group">
 							<div class="col-md-6">
-								<!-- <p>Forgot Password? Contact Admin</p> -->
+								<p><a href="{{ url('/') }}">Login as Staff</a></p>
 							</div>
 						</div>
 					</div>

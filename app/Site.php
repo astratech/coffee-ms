@@ -64,22 +64,22 @@ class Site extends Model{
         return strtoupper($r);
     }
 
-    public static function get_staffs(){
-    	return DB::select("SELECT * FROM staffs ORDER BY id DESC");
-    	 
+    public static function get_records($table){
+        return DB::select("SELECT * FROM $table ORDER BY id DESC");
+         
     }
 
-    public static function get_staff($id){
-    	$r = DB::select("SELECT * FROM staffs WHERE id='$id'");
-    	$output = [];
-    	if(count($r) > 0){
-    		$output = $r;
-    	}
-    	else{
-    		 foreach(Schema::getColumnListing("users") as $d => $value) {
+    public static function get_record($table, $id){
+        $r = DB::select("SELECT * FROM $table WHERE id='$id'");
+        $output = [];
+        if(count($r) > 0){
+            $output = $r;
+        }
+        else{
+             foreach(Schema::getColumnListing("$table") as $d => $value) {
                 $output[$value] = null;
             }
-    	}
+        }
 
         return $output; 
     }

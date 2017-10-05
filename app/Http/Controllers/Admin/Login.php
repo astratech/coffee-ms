@@ -11,6 +11,13 @@ class Login extends Controller{
 
 	public function __construct() {
         $this->site_model = new Site;
+
+        if(isset($_SESSION['coffee_admin_logged'])){
+            $url = url('/admin/staffs');
+            header("Location: $url");
+            exit();
+        }
+          
     }
 
     

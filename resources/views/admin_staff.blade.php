@@ -50,7 +50,7 @@
     
 
 
-<script type="text/javascript">
+    <script type="text/javascript">
         //Ajax
         $(document).ready(function () {
            
@@ -205,6 +205,7 @@
                                             <th>DEPARTMENT</th>
                                             <th>EMAIL</th>
                                             <th>PASSWORD</th>
+                                            <th>LAST LOGIN</th>
                                             <th>ACTIONS</th>
                                         </tr>
                                     </thead>
@@ -221,6 +222,7 @@
                                                     	<p>{{ App\Site::decode_password($r->password) }}</p>
                                                     	<button class="btn btn-info btn-xs change-password" data-all="{{ (json_encode($r)) }}">Change Password</button>
                                                     </td>
+                                                    <td>{{ is_null($r->last_login) ? '' : date("Y-m-d", strtotime($r->last_login)) }}</td>
                                                     <td>
                                                         <button class="btn btn-default btn-sm editBtn" data-all="{{ (json_encode($r)) }}">Edit</button>
                                                         <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
@@ -231,7 +233,7 @@
                                     </tbody>
                                 </table> 
 
-                                <a href="#">Check all the sales</a> </div>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -456,10 +458,6 @@
 
 		</div>
 	</div>
-
-   
-
-    
 
     
 </body>
