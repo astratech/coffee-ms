@@ -20,17 +20,54 @@
     <link href="{{ URL::asset('site/css/colors/blue-dark.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jq-3.2.1/jq-3.2.1/dt-1.10.16/b-1.4.2/b-html5-1.4.2/b-print-1.4.2/kt-2.3.2/r-2.2.0/rr-1.2.3/sl-1.2.3/datatables.min.css"/>
 
+     <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script> -->
+     <script src="{{ URL::asset('site/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js') }}"></script>
+    <!--slimscroll JavaScript -->
+    <script src="{{ URL::asset('site/js/jquery.slimscroll.js') }}"></script>
+    <!--Wave Effects -->
+    <script src="{{ URL::asset('site/js/waves.js') }}"></script>
+    <!--Counter js -->
+    <script src="https://cdn.jsdelivr.net/npm/jdenticon@1.7.2" async></script>
+    <script src="{{ URL::asset('site/plugins/bower_components/waypoints/lib/jquery.waypoints.js') }}"></script>
+    <script src="{{ URL::asset('site/plugins/bower_components/counterup/jquery.counterup.min.js') }}"></script>
+    <!--Morris JavaScript -->
+    <script src="{{ URL::asset('site/plugins/bower_components/raphael/raphael-min.js') }}"></script>
     
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jq-3.2.1/jq-3.2.1/dt-1.10.16/b-1.4.2/b-html5-1.4.2/b-print-1.4.2/kt-2.3.2/r-2.2.0/rr-1.2.3/sl-1.2.3/datatables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
+    <!-- Custom Theme JavaScript -->
+    <script src="{{ URL::asset('site/js/site.js') }}"></script>
+
+
+<script type="text/javascript">
+        //Ajax
+        $(document).ready(function () {
+           
+            $(".editBtn").click(function (e) {
+                e.preventDefault();
+                // alert("Sfddf");
+                try{
+                    // var d = $(this).data('all');
+
+                    // $("#editModal [name='staff_id']").val(d.id);
+                    // $("#editModal .modal-title").text("Edit Staff: "+d.uq_id);
+                    
+                    $("#addModal").modal('show');
+                }
+                catch(err){
+                    alert(err);
+                }
+            });
+
+        });//end ready
+    </script> 
     
-    <!-- Menu Plugin JavaScript -->
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
 </head>
 
 <body>
@@ -109,8 +146,7 @@
                     </div>
 
                     <!-- /.col -->
-                </div>
-                <!-- /.row -->
+                </div>                <!-- /.row -->
                 <!--row -->
                 <div class="row">
                     <div class="col-sm-12">
@@ -125,7 +161,7 @@
                                                         
                             <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Staff</a>
                             <div class="table-responsive">
-                                <table class="table ">
+                                <table class="table" id="cs-data-table">
                                     <thead>
                                         <tr>
                                             <th>NAME</th>
@@ -250,71 +286,11 @@
         </div>
 
     
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+   
 
-    <script src="{{ URL::asset('site/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.js') }}"></script>
-    <!--slimscroll JavaScript -->
-    <script src="{{ URL::asset('site/js/jquery.slimscroll.js') }}"></script>
-    <!--Wave Effects -->
-    <script src="{{ URL::asset('site/js/waves.js') }}"></script>
-    <!--Counter js -->
-    <script src="https://cdn.jsdelivr.net/npm/jdenticon@1.7.2" async></script>
-    <script src="{{ URL::asset('site/plugins/bower_components/waypoints/lib/jquery.waypoints.js') }}"></script>
-    <script src="{{ URL::asset('site/plugins/bower_components/counterup/jquery.counterup.min.js') }}"></script>
-    <!--Morris JavaScript -->
-    <script src="{{ URL::asset('site/plugins/bower_components/raphael/raphael-min.js') }}"></script>
-    <!-- Custom Theme JavaScript -->
-    <script src="{{ URL::asset('site/js/custom.min.js') }}"></script>
+    
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/jq-3.2.1/jq-3.2.1/dt-1.10.16/b-1.4.2/b-html5-1.4.2/b-print-1.4.2/kt-2.3.2/r-2.2.0/rr-1.2.3/sl-1.2.3/datatables.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.4.2/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
-    <!-- Custom Theme JavaScript -->
-
-    <script type="text/javascript">
-        //Ajax
-        $(document).ready(function () {
-        
-            // $(".s").click(function (e) {
-            //     e.preventDefault();
-            //     try{
-            //         var d = $(this).data('all');
-
-            //         $("#app-modal input[name='material_id']").val(d.id);
-            //         $("#app-modal").modal("show");
-            //     }
-            //     catch(err){
-            //         alert(err);
-            //     }
-            // });
-
-            // $(".c-n-q").click(function (e) {
-            //     e.preventDefault();
-            //     $("#c-form-modal").modal("show");
-            // });
-
-            $(".editBtn").click(function (e) {
-                e.preventDefault();
-                // alert("Sfddf");
-                try{
-                    // var d = $(this).data('all');
-
-                    // $("#editModal [name='staff_id']").val(d.id);
-                    // $("#editModal .modal-title").text("Edit Staff: "+d.uq_id);
-                    
-                    $("#addModal").modal('show');
-                }
-                catch(err){
-                    alert(err);
-                }
-            });
-
-        });//end ready
-    </script> 
+    
 </body>
 
 </html>
