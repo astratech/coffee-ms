@@ -67,5 +67,16 @@ class Login extends Controller{
         unset($_SESSION['notification']);
         exit();
     }
+
+    public function logout(Request $request){
+
+         if(isset($_POST['logout'])){
+            unset($_SESSION['coffee_staff_logged']);
+
+            $url = url('/login');
+            header("Location: $url");
+            exit();
+        }
+    }
 }
 

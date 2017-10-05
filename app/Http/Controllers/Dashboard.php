@@ -12,18 +12,33 @@ class Dashboard extends Controller{
 	public function __construct() {
         $this->site_model = new Site;
 
-        // if(!isset($_SESSION['coffee_staff_logged'])){
-        //     $url = url('/login');
-        //     header("Location: $url");
-        //     exit();
-        // }
-        // else{
-        //     $this->admin_id = $_SESSION['coffee_staff_logged']['id'];
-        // }
+        if(!isset($_SESSION['coffee_staff_logged'])){
+            $url = url('/login');
+            header("Location: $url");
+            exit();
+        }
+        else{
+            $this->staff_id = $_SESSION['coffee_staff_logged']['id'];
+        }
     }
 
     
     public function index(Request $request){
+
+        // var_dump($this->site_model->get_record('staffs', '1'));
+        // echo $this->site_model->get_record('staffs', '1')->name;
+        // echo $s['0']->name;
+
+        // $r = DB::select("SELECT * FROM staffs WHERE id='1'");
+        // $output = [];
+        // if(count($r) > 0){
+        //     foreach ($r as $value) {
+        //         $g = $value;
+        //     }
+        // }
+        // var_dump($g);
+        // echo $g->name;
+        // exit();
 
         if(isset($_POST['logout'])){
             unset($_SESSION['coffee_admin_logged']);
@@ -221,7 +236,7 @@ class Dashboard extends Controller{
         }
 
         $data['page_title'] = "Dashboard";
-        
+
         echo view('header', $data);
         echo view('dashboard', $data);
         echo view('footer');

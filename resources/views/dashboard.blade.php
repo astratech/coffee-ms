@@ -8,7 +8,7 @@
                         <h4 class="page-title">{!! $page_title !!}</h4> </div>
                     <div class="col-lg-9 col-sm-8 col-md-8 col-xs-12">
                         <ol class="breadcrumb">
-                            <!--  -->
+                            <li>Welcome {{ App\Site::get_record('staffs', $_SESSION['coffee_staff_logged']['id'])->name }}</li>
                         </ol>
                     </div>
                     <!-- /.col-lg-12 -->

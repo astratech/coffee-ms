@@ -45,7 +45,7 @@
 			
 
 				<form action="{{ url()->current() }}" method="POST" class="form-horizontal form-material">
-					{{ csrf_field() }}
+					<input type="hidden" name="_token" value="{{ csrf_token() }}">
 					<div class="col-md-12">
 
 						<h3 class="text-center">AdminLogin</h3>

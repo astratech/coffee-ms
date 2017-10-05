@@ -12,14 +12,14 @@ class Suppliers extends Controller{
 	public function __construct() {
         $this->site_model = new Site;
 
-        // if(!isset($_SESSION['coffee_staff_logged'])){
-        //     $url = url('/login');
-        //     header("Location: $url");
-        //     exit();
-        // }
-        // else{
-        //     $this->admin_id = $_SESSION['coffee_staff_logged']['id'];
-        // }
+        if(!isset($_SESSION['coffee_staff_logged'])){
+            $url = url('/login');
+            header("Location: $url");
+            exit();
+        }
+        else{
+            $this->staff_id = $_SESSION['coffee_staff_logged']['id'];
+        }
     }
 
     

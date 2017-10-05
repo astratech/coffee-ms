@@ -73,7 +73,9 @@ class Site extends Model{
         $r = DB::select("SELECT * FROM $table WHERE id='$id'");
         $output = [];
         if(count($r) > 0){
-            $output = $r;
+            foreach ($r as $value) {
+                $output = $value;
+            }
         }
         else{
              foreach(Schema::getColumnListing("$table") as $d => $value) {

@@ -63,7 +63,6 @@ class Login extends Controller{
 		}
 
     	echo view('admin_login');
-        unset($_SESSION['notification']);
         exit();
     }
 }

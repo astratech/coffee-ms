@@ -17,6 +17,7 @@ Route::get('/', function () {
 
 Route::any('/', 'Login@index');
 Route::any('/login', 'Login@index');
+Route::any('/logout', 'Login@logout');
 Route::any('/dashboard', 'Dashboard@index');
 Route::any('/suppliers', 'Suppliers@index');
 Route::any('/card/enc/{txt}', 'Card@enc');

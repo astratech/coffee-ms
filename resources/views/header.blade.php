@@ -119,7 +119,7 @@
                 <ul class="nav navbar-top-links navbar-right pull-right">
                     <li>
                         <button type='submit' name='logout' form='form-logout' class="btn btn-primary" style="margin-top: 10px; margin-right: 30px;"><span class="hide-menu"><i class="fa fa-sign-out"></i> Logout</span></button>
-                        <form action='{{ url()->current() }}' method='POST' id='form-logout'>
+                        <form action='{{ url('/logout')}}' method='POST' id='form-logout'>
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                         </form>
                     </li>
@@ -134,8 +134,14 @@
             <div class="sidebar-nav navbar-collapse slimscrollsidebar">
                 <ul class="nav" id="side-menu">
                     <li style="padding: 10px 0 0;">
-                        <a href="staffs" class="waves-effect"><i class="fa fa-users fa-fw" aria-hidden="true"></i><span class="hide-menu">Staffs</span></a>
+                        <a href="{{ url('/dashboard') }}" class="waves-effect"><span class="hide-menu">Dashboard</span></a>
                     </li>
+
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/suppliers') }}" class="waves-effect"><span class="hide-menu">Suppliers</span></a>
+                    </li>
+
+
 
                 </ul>
             </div>
