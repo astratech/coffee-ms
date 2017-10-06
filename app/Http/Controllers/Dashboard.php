@@ -237,7 +237,7 @@ class Dashboard extends Controller{
 
         $data['page_title'] = "Dashboard";
 
-        echo view('header', $data);
+        
         echo view('dashboard', $data);
         echo view('footer');
         exit();

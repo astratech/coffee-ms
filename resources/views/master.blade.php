@@ -49,61 +49,8 @@
     <script src="{{ URL::asset('site/plugins/bower_components/raphael/raphael-min.js') }}"></script>
     
 
-
-    <script type="text/javascript">
-        //Ajax
-        $(document).ready(function () {
-           
-            $(".editBtn").click(function (e) {
-                e.preventDefault();
-                try{
-                    var d = $(this).data('all');
-
-                    $("#editModal [name='staff_id']").val(d.id);
-                    $("#editModal [name='name']").val(d.name);
-                    $("#editModal [name='dept']").val(d.dept);
-                    $("#editModal [name='email']").val(d.email);
-                    $("#editModal .modal-title").text("Edit Staff: "+d.uq_id);
-                    
-                    $("#editModal").modal('show');
-                }
-                catch(err){
-                    alert(err);
-                }
-            });
-
-            $(".dltBtn").click(function (e) {
-                e.preventDefault();
-                try{
-                    var d = $(this).data('all');
-
-                    $("#appModal [name='staff_id']").val(d.id);
-                    $("#appModal .modal-title").text("Delete Staff: "+d.uq_id);
-                    
-                    $("#appModal").modal('show');
-                }
-                catch(err){
-                    alert(err);
-                }
-            });
-
-            $(".change-password").click(function (e) {
-                e.preventDefault();
-                try{
-                    var d = $(this).data('all');
-
-                    $("#passModal [name='staff_id']").val(d.id);    
-                    $("#passModal .modal-title").text("Change Staff Password: "+d.uq_id);                
-                    
-                    $("#passModal").modal('show');
-                }
-                catch(err){
-                    alert(err);
-                }
-            });
-
-        });//end ready
-    </script> 
+    @yield('script')
+   
     
 </head>
 
@@ -147,3 +94,5 @@
             </div>
         </div>
         <!-- Left navbar-header end -->
+
+        @yield('content')

@@ -1,4 +1,50 @@
+@extends('master')
 
+@section('script')
+     <script type="text/javascript">
+        //Ajax
+        $(document).ready(function () {
+           
+            $(".editBtn").click(function (e) {
+                e.preventDefault();
+                try{
+                    var d = $(this).data('all');
+
+                    $("#editModal [name='supplier_id']").val(d.id);
+                    $("#editModal [name='name']").val(d.name);
+                    $("#editModal [name='contact']").val(d.contact_info);
+                    
+                    $("#editModal").modal('show');
+                }
+                catch(err){
+                    alert(err);
+                }
+            });
+
+            $(".dltBtn").click(function (e) {
+                e.preventDefault();
+                try{
+                    var d = $(this).data('all');
+
+                    $("#delModal [name='supplier_id']").val(d.id);
+                    $("#delModal [name='name']").val(d.name);
+                    $("#delModal [name='contact']").val(d.contact_info);
+                    
+                    $("#delModal").modal('show');
+                }
+                catch(err){
+                    alert(err);
+                }
+            });
+
+            
+
+        });//end ready
+
+    </script> 
+@endsection
+
+@section('content')
 
         <!-- Page Content -->
         <div id="page-wrapper">
@@ -78,6 +124,7 @@
                                                     <td>{{ $r->uq_id }}</td>
                                                     <td>{{ $r->contact_info }}</td>
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
+                                                    <td>{{ $r->created_by }}</td>
                                                     <td>
                                                         <button class="btn btn-default btn-sm editBtn" data-all="{{ (json_encode($r)) }}">Edit</button>
                                                         <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
@@ -172,6 +219,13 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
+                                                <input type="hidden" name="supplier_id">
+                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
                                                 <input type="submit" name="update" value="Update Details" class="btn btn-success">
                                             </div>
                                         </div>
@@ -188,7 +242,7 @@
                 </div>
             </div>
 
-            <div id="appModal" class="modal fade" role="dialog">
+            <div id="delModal" class="modal fade" role="dialog">
                 <div class="modal-dialog">
                     <!-- Modal content-->
                     <div class="modal-content">
@@ -201,10 +255,11 @@
                             <div class="row">
                                 <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
                                     <div class="col-md-12">                        
-                                    <p>You are about to delete a record <br><br>Are you sure of this?</p>
+                                       <p>You are about to delete a record <br><br>Are you sure of this?</p>
+
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="hidden" name="staff_id">
+                                                <input type="hidden" name="supplier_id">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                             </div>
                                         </div>
@@ -226,4 +281,4 @@
 
                 </div>
             </div>
-            
+@endsection
