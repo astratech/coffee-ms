@@ -103,7 +103,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Add Staff</h4>
+                            <h4 class="modal-title">Add Supplier</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -113,29 +113,15 @@
                                     <div class="col-md-12">                        
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Staff Name</label>
+                                                <label>Supplier Name</label>
                                                 <input type="text" name="name" class="form-control">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Department</label>
-                                                <input type="text" name="dept" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Email</label>
-                                                <input type="text" name="email" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Password</label>
-                                                <input type="text" name="password" class="form-control" value="{{ App\Site::gen_token() }}" readonly>
+                                                <label>Contact Info</label>
+                                                <input type="text" name="contact" class="form-control">
                                             </div>
                                         </div>
 
@@ -163,7 +149,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Edit Staff</h4>
+                            <h4 class="modal-title">Edit Supplier</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -172,29 +158,15 @@
                                     <div class="col-md-12">                        
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Staff Name</label>
+                                                <label>Supplier Name</label>
                                                 <input type="text" name="name" class="form-control">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Department</label>
-                                                <input type="text" name="dept" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Email</label>
-                                                <input type="text" name="email" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="hidden" name="staff_id">
-                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                <label>Contact Info</label>
+                                                <input type="text" name="contact" class="form-control">
                                             </div>
                                         </div>
 
@@ -216,66 +188,13 @@
                 </div>
             </div>
 
-            <div id="passModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Change Staff Password</h4>
-                        </div>
-                        
-                        <div class="modal-body">
-                            <div class="row">
-                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
-                                    <div class="col-md-12">                        
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>New Password</label>
-                                                <input type="password" name="password" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Retype New Password</label>
-                                                <input type="password" name="rpassword" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="hidden" name="staff_id">
-                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="submit" name="update_password" value="Change Password" class="btn btn-success">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                        
-                    </div>
-
-                </div>
-            </div>
-
             <div id="appModal" class="modal fade" role="dialog">
                 <div class="modal-dialog">
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Delete Staff</h4>
+                            <h4 class="modal-title">Delete Supplier</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -292,7 +211,7 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="submit" name="delete" value="Delete Staff" class="btn btn-success">
+                                                <input type="submit" name="delete" value="Delete Supplier" class="btn btn-success">
                                             </div>
                                         </div>
                                     </div>

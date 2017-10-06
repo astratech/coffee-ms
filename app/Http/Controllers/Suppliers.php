@@ -35,110 +35,58 @@ class Suppliers extends Controller{
 
         if(isset($_POST['create'])){
             $name = $this->site_model->fil_string($request->input('name'));
-            $dept = $this->site_model->fil_string($request->input('dept'));
-            $email = $this->site_model->fil_email($request->input('email'));
-            $password = $request->input('password');
-            $uq_id = $this->site_model->gen_uq_id('STF');
+            $contact = $this->site_model->fil_string($request->input('contact'));
+            $uq_id = $this->site_model->gen_uq_id('SUP');
 
             $date = date("Y-m-d H:i:s");
 
 
-            if(empty($name) || empty($dept) || empty($email) || empty($password)){
+            if(empty($name) || empty($contact)){
                 //set notification session
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                $url = url('/admin/staffs');
+                $url = url('/suppliers');
                 header("Location: $url");
                 exit();
             }
 
-            $password = $this->site_model->encode_password($password);
-
-            $r = DB::select("SELECT * FROM staffs WHERE email='$email'");
+            
+            $r = DB::select("SELECT * FROM suppliers WHERE name='$name'");
             if(count($r) > 0){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Staff with email $email exists.
                             </div>";
 
-                $url = url('/admin/staffs');
+                $url = url('/suppliers');
                 header("Location: $url");
                 exit();
             }
             else{
-                $in_data = ['name'=>$name,
-                    'dept'=>$dept,
-                    'email'=>$email,
-                    'password'=>$password,
-                    'uq_id'=>$uq_id,
+                $in_data = ['uq_id'=>$uq_id,
+                    'name'=>$name,
+                    'contact_info'=>$contact,
                     'created_at'=>$date,
-                    'created_by'=>'1'
+                    'created_by'=>$this->staff_id,
+                    'updated_by'=>$this->staff_id,
+                    'updated_at'=>$date
                     ];
 
-                DB::table('staffs')->insert($in_data);
+                DB::table('suppliers')->insert($in_data);
 
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Staff Added
+                                SUCESSFULL: Supplier Added
                             </div>";
-                $url = url('/admin/staffs');
+                $url = url('/suppliers');
                 header("Location: $url");
                 exit();
             }
         }
 
-        if(isset($_POST['update_password'])){
-            $password = $request->input('password');
-            $rpassword = $request->input('rpassword');
-            $staff_id = $request->input('staff_id');
-
-            $date = date("Y-m-d H:i:s");
-
-            if(empty($password) || empty($rpassword) || empty($staff_id)){
-                //set notification session
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Fill the empty fields
-                            </div>";
-                $url = url('/admin/staffs');
-                header("Location: $url");
-                exit();
-            }
-
-            if($password != $rpassword){
-                //set notification session
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Password Mismatch
-                            </div>";
-                $url = url('/admin/staffs');
-                header("Location: $url");
-                exit();
-            }
-
-            $password = $this->site_model->encode_password($password);
-
-            $in_data = [
-                'password'=>$password,
-                'updated_at'=>$date,
-                'updated_by'=>'1'
-            ];
-
-            DB::table('staffs')
-                    ->where('id', $staff_id)
-                    ->update($in_data);
-
-
-            $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
-                            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                            SUCESSFULL: Password Updated.
-                        </div>";
-            $url = url('/admin/staffs');
-            header("Location: $url");
-            exit();
-        }
+        
 
         if(isset($_POST['update'])){
             $staff_id = $request->input('staff_id');
