@@ -85,6 +85,10 @@
                     </li>
 
                     <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/units') }}" class="waves-effect"><span class="hide-menu">Units</span></a>
+                    </li>
+
+                    <li style="padding: 10px 0 0;">
                         <a href="{{ url('/suppliers') }}" class="waves-effect"><span class="hide-menu">Suppliers</span></a>
                     </li>
 
