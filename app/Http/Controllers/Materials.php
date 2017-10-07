@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Site;
 use DB;	
 
-class Machines extends Controller
+class Materials extends Controller
 {
     public function __construct() {
         $this->site_model = new Site;
@@ -33,14 +33,12 @@ class Machines extends Controller
         }
 
         if(isset($_POST['create'])){
-            $company_name = $this->site_model->fil_string($request->input('company_name'));
-            $model = $this->site_model->fil_string($request->input('model'));
-            $serial_num = $this->site_model->fil_string($request->input('serial_num'));
+            $uq_id = $this->site_model->gen_uq_id("MTR");
             $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
-            $price = $this->site_model->fil_string($request->input('price'));
-            $counter_status = $this->site_model->fil_string($request->input('counter_status'));
-            $leasing_rate = $this->site_model->fil_string($request->input('leasing_rate'));
-            $uq_id = $this->site_model->fil_string($request->input('uq_id'));
+            $unit = $this->site_model->fil_string($request->input('unit'));
+            $name = $this->site_model->fil_string($request->input('name'));
+            $quantity = $this->site_model->fil_string($request->input('quantity'));
+            $cost = $this->site_model->fil_string($request->input('cost'));
 
             $date = date("Y-m-d H:i:s");
 
@@ -51,81 +49,43 @@ class Machines extends Controller
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                    $url = url('/machines');
+                    $url = url('/materials');
                     header("Location: $url");
                     exit();
                 }
             }
 
-            $r = DB::select("SELECT * FROM machines WHERE uq_id='$uq_id' OR model='$model'");
+            $r = DB::select("SELECT * FROM raw_materials WHERE name='$name' OR uq_id='uq_id'");
             if(count($r) > 0){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Machine Code or Model Exists.
+                                <strong>ERROR: </strong> Raw Material already Exist.
                             </div>";
 
-                $url = url('/machines');
+                $url = url('/materials');
                 header("Location: $url");
                 exit();
             }
             else{
-                $in_data = ['uq_id'=>$uq_id,
-                    'company_name'=>$company_name,
-                    'model'=>$model,
-                    'serial_num'=>$serial_num,
+                $in_data = ['name'=>$name,
                     'supplier_id'=>$supplier_id,
-                    'price'=>$price,
-                    'counter_status'=>$counter_status,
-                    'leasing_rate'=>$leasing_rate,
+                    'unit'=>$unit,
+                    'uq_id'=>$uq_id,
+                    'quantity'=>$quantity,
+                    'cost'=>$cost,
                     'created_at'=>$date,
                     'created_by'=>$this->staff_id,
                     'updated_by'=>$this->staff_id,
                     'updated_at'=>$date
                     ];
 
-                DB::table('machines')->insert($in_data);
+                DB::table('raw_materials')->insert($in_data);
 
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Machine Added
+                                SUCESSFULL: Record Added
                             </div>";
-                $url = url('/machines');
-                header("Location: $url");
-                exit();
-            }
-        }
-
-        if(isset($_POST['add_drink'])){
-            $machine_id = $this->site_model->fil_string($request->input('machine_id'));
-            $drink_id = $this->site_model->fil_string($request->input('drink_id'));
-            
-            $date = date("Y-m-d H:i:s");
-
-            $r = DB::select("SELECT * FROM machine_drinks WHERE machine_id='$machine_id' OR drink_id='$drink_id'");
-            if(count($r) > 0){
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> This Drink is already added to this Machine.
-                            </div>";
-
-                $url = url('/machines');
-                header("Location: $url");
-                exit();
-            }
-            else{
-                $in_data = ['machine_id'=>$machine_id,
-                    'drink_id'=>$drink_id,
-                    'created_at'=>$date,
-                    'created_by'=>$this->staff_id,
-                    ];
-
-                DB::table('machine_drinks')->insert($in_data);
-
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Machine Added
-                            </div>";
-                $url = url('/machines');
+                $url = url('/materials');
                 header("Location: $url");
                 exit();
             }
@@ -134,55 +94,49 @@ class Machines extends Controller
         
 
         if(isset($_POST['update'])){
-            $company_name = $this->site_model->fil_string($request->input('company_name'));
-            $model = $this->site_model->fil_string($request->input('model'));
-            $serial_num = $this->site_model->fil_string($request->input('serial_num'));
-            $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
-            $price = $this->site_model->fil_string($request->input('price'));
-            $counter_status = $this->site_model->fil_string($request->input('counter_status'));
-            $leasing_rate = $this->site_model->fil_string($request->input('leasing_rate'));
-            $uq_id = $this->site_model->fil_string($request->input('uq_id'));
             $c_id = $this->site_model->fil_string($request->input('c_id'));
-
+            $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
+            $unit = $this->site_model->fil_string($request->input('unit'));
+            $name = $this->site_model->fil_string($request->input('name'));
+            $quantity = $this->site_model->fil_string($request->input('quantity'));
+            $cost = $this->site_model->fil_string($request->input('cost'));
+            
             $date = date("Y-m-d H:i:s");
 
             foreach ($_POST as $key => $val) {
-                if (empty($val) OR empty($c_id)) {
+                if (empty($val)) {
 
                     $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                    $url = url('/machines');
+                    $url = url('/materials');
                     header("Location: $url");
                     exit();
                 }
             }
 
-            $r = DB::select("SELECT * FROM machines WHERE (model='$model' OR serial_num='$serial_num') AND id!='$c_id'");
+            $r = DB::select("SELECT * FROM raw_materials WHERE name='$name' AND id!='$c_id'");
             if(count($r) > 0){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                ERROR: Model-Number:model or Serial-Num: $serial_num is assigned to another Machine.
+                                ERROR: $name is assigned.
                             </div>";
-                $url = url('/machines');
+                $url = url('/materials');
                 header("Location: $url");
                 exit();   
             }
             else{
-                $in_data = ['uq_id'=>$uq_id,
-                    'company_name'=>$company_name,
-                    'model'=>$model,
-                    'serial_num'=>$serial_num,
+                $in_data = ['name'=>$name,
                     'supplier_id'=>$supplier_id,
-                    'price'=>$price,
-                    'counter_status'=>$counter_status,
-                    'leasing_rate'=>$leasing_rate,
+                    'unit'=>$unit,
+                    'quantity'=>$quantity,
+                    'cost'=>$cost,
                     'updated_by'=>$this->staff_id,
                     'updated_at'=>$date
                 ];
 
-                DB::table('machines')
+                DB::table('raw_materials')
                         ->where('id', $c_id)
                         ->update($in_data);
 
@@ -191,7 +145,7 @@ class Machines extends Controller
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 SUCESSFULL: Record Updated.
                             </div>";
-                $url = url('/machines');
+                $url = url('/materials');
                 header("Location: $url");
                 exit();    
             }
@@ -217,21 +171,21 @@ class Machines extends Controller
                 exit();
             }
 
-            DB::table('machines')->where('id', '=', $c_id)->delete();
+            DB::table('raw_materials')->where('id', '=', $c_id)->delete();
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                             SUCESSFULL: Record Deleted.
                         </div>";
-            $url = url('/machines');
+            $url = url('/materials');
             header("Location: $url");
             exit();
             
         }
 
-        $data['page_title'] = "Machines";
+        $data['page_title'] = "Materials";
         
-        echo view('machines', $data);
+        echo view('materials', $data);
         echo view('footer');
         exit();
         // exit();
