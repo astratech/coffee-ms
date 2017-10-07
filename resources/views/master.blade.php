@@ -92,6 +92,10 @@
                         <a href="{{ url('/customers') }}" class="waves-effect"><span class="hide-menu">Customers</span></a>
                     </li>
 
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/machines') }}" class="waves-effect"><span class="hide-menu">Machines</span></a>
+                    </li>
+
 
 
                 </ul>

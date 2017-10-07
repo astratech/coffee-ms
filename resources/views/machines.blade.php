@@ -1,7 +1,7 @@
 @extends('master')
 
 @section('script')
-     <script type="text/javascript">
+    <script type="text/javascript">
         //Ajax
         $(document).ready(function () {
            
@@ -10,9 +10,15 @@
                 try{
                     var d = $(this).data('all');
 
-                    $("#editModal [name='supplier_id']").val(d.id);
-                    $("#editModal [name='name']").val(d.name);
-                    $("#editModal [name='contact']").val(d.contact_info);
+                    $("#editModal [name='c_id']").val(d.id);
+                    $("#editModal [name='uq_id']").val(d.uq_id);
+                    $("#editModal [name='company_name']").val(d.company_name);
+                    $("#editModal [name='model']").val(d.model);
+                    $("#editModal [name='serial_num']").val(d.serial_num);
+                    $("#editModal [name='supplier_id']").val(d.supplier_id);
+                    $("#editModal [name='price']").val(d.price);
+                    $("#editModal [name='counter_status']").val(d.counter_status);
+                    $("#editModal [name='leasing_rate']").val(d.leasing_rate);
                     
                     $("#editModal").modal('show');
                 }
@@ -26,9 +32,7 @@
                 try{
                     var d = $(this).data('all');
 
-                    $("#delModal [name='supplier_id']").val(d.id);
-                    $("#delModal [name='name']").val(d.name);
-                    $("#delModal [name='contact']").val(d.contact_info);
+                    $("#delModal [name='c_id']").val(d.id);
                     
                     $("#delModal").modal('show');
                 }
@@ -66,9 +70,9 @@
                         <div class="white-box">
                             <div class="col-in row">
                                 <div class="col-md-6 col-sm-6 col-xs-6"> <i data-icon="E" class="linea-icon linea-basic"></i>
-                                    <h5 class="text-muted vb">Total Number of Supplier</h5> </div>
+                                    <h5 class="text-muted vb">Total Number of Machines</h5> </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <h3 class="counter text-right m-t-15 text-danger">{{ count(App\Site::get_records('suppliers')) }}</h3> </div>
+                                    <h3 class="counter text-right m-t-15 text-danger">{{ count(App\Site::get_records('machines')) }}</h3> </div>
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <div class="progress">
                                     
@@ -99,17 +103,24 @@
                         @endif
                         <div class="white-box">
                                                       
-                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Supplier</a>
+                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Machines</a>
                             <br>                           
                             <br> 
 
                             <div class="table-responsive">
-                                <table class="table" id="cs-data-table">
+                                <table class="table table-borderedb" id="cs-data-table">
                                     <thead>
                                         <tr>
-                                            <th>NAME</th>
-                                            <th>SUPPLIER ID</th>
-                                            <th>CONTACT INFO</th>
+                                            <th>MACHINE CODE</th>
+                                            <th>COMPANY NAME</th>
+                                            <th>MODEL</th>
+                                            <th>SERIAL NUM</th>
+                                            <th>SUPPLIER</th>
+                                            <th>PRICE</th>
+                                            <th>COUNTER STATUS</th>
+                                            <th>LEASING RATE</th>
+                                            <th>ASSIGNED DRINKS</th>
+
                                             <th>DATE CREATED</th>
                                             <th>CREATED BY</th>
                                             <th>ACTIONS</th>
@@ -117,12 +128,27 @@
                                     </thead>
                                     <tbody>
 
-                                        @if(count(App\Site::get_records('suppliers')) > 0)
-                                           @foreach (App\Site::get_records('suppliers') as $r)
+                                        @if(count(App\Site::get_records('machines')) > 0)
+                                           @foreach (App\Site::get_records('machines') as $r)
                                                 <tr>
-                                                    <td>{{$r->name}}</td>
                                                     <td>{{ $r->uq_id }}</td>
-                                                    <td>{{ $r->contact_info }}</td>
+                                                    <td>{{ $r->company_name }}</td>
+                                                    <td>{{ $r->model }}</td>
+                                                    <td>{{ $r->serial_num }}</td>
+                                                    <td>{{ App\Site::get_record("suppliers", $r->supplier_id)->uq_id }}</td>
+                                                    <td>{{ $r->price }}</td>
+                                                    <td>{{ $r->counter_status }}</td>
+                                                    <td>{{ $r->leasing_rate }}</td>
+                                                    <td>
+                                                        @if(count(DB::select("SELECT * FROM machine_drinks WHERE machine_id='$r->id'")) > 0)
+                                                            @foreach(DB::select("SELECT * FROM machine_drinks WHERE machine_id='$r->id'") as $r)
+                                                               <p>{{ $r->name }}</p>
+                                                            @endforeach
+                                                        @else
+                                                            <p>No Drink</p>
+                                                        @endif
+                                                        <p><button class="btn btn-info btn-xs editBtn" data-all="{{ (json_encode($r)) }}">+ Add Drink</button></p>
+                                                    </td>
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
                                                     <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>
                                                     <td>
@@ -150,27 +176,74 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Add Supplier</h4>
+                            <h4 class="modal-title">Add Machine</h4>
                         </div>
                         
                         <div class="modal-body">
                             <div class="row">
                                 <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
                                     {{ csrf_field() }}
-                                    <div class="col-md-12">                        
+                                    <div class="col-md-12">  
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Supplier Name</label>
-                                                <input type="text" name="name" class="form-control">
+                                                <label>Machine Code</label>
+                                                <input type="text" name="uq_id" class="form-control" value="{{ App\Site::gen_uq_id('MCH') }}" readonly>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Contact Info</label>
-                                                <input type="text" name="contact" class="form-control">
+                                                <label>Supplier</label>
+                                                <select name="supplier_id" class="form-control">
+                                                    @foreach (App\Site::get_records('suppliers') as $r)
+                                                        <option value="{{ $r->id }}">{{ $r->name }} - {{ $r->uq_id }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Company Name</label>
+                                                <input type="text" name="company_name" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Model</label>
+                                                <input type="text" name="model" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Serial Number</label>
+                                                <input type="text" name="serial_num" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Price</label>
+                                                <input type="text" name="price" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Counter Status</label>
+                                                <input type="text" name="counter_status" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Leasing Rate</label>
+                                                <input type="text" name="leasing_rate" class="form-control">
+                                            </div>
+                                        </div>
+
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
@@ -196,7 +269,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Edit Supplier</h4>
+                            <h4 class="modal-title">Edit Machine</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -205,21 +278,69 @@
                                     <div class="col-md-12">                        
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Supplier Name</label>
-                                                <input type="text" name="name" class="form-control">
+                                                <label>Machine Code</label>
+                                                <input type="text" name="uq_id" class="form-control" readonly>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Contact Info</label>
-                                                <input type="text" name="contact" class="form-control">
+                                                <label>Supplier</label>
+                                                <select name="supplier_id" class="form-control">
+                                                    @foreach (App\Site::get_records('suppliers') as $r)
+                                                        <option value="{{ $r->id }}">{{ $r->name }} - {{ $r->uq_id }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="hidden" name="supplier_id">
+                                                <label>Company Name</label>
+                                                <input type="text" name="company_name" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Model</label>
+                                                <input type="text" name="model" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Serial Number</label>
+                                                <input type="text" name="serial_num" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Price</label>
+                                                <input type="text" name="price" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Counter Status</label>
+                                                <input type="text" name="counter_status" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Leasing Rate</label>
+                                                <input type="text" name="leasing_rate" class="form-control">
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="hidden" name="c_id">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                             </div>
                                         </div>
@@ -248,7 +369,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Delete Supplier</h4>
+                            <h4 class="modal-title">Delete Machine</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -259,14 +380,14 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="hidden" name="supplier_id">
+                                                <input type="hidden" name="c_id">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="submit" name="delete" value="Delete Supplier" class="btn btn-success">
+                                                <input type="submit" name="delete" value="Delete" class="btn btn-success">
                                             </div>
                                         </div>
                                     </div>
