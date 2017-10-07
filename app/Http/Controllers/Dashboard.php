@@ -43,7 +43,7 @@ class Dashboard extends Controller{
         if(isset($_POST['logout'])){
             unset($_SESSION['coffee_admin_logged']);
 
-            $url = url('/admin/staffs');
+            $url = url('/login');
             header("Location: $url");
             exit();
         }
