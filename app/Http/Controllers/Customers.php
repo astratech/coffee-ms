@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Site;
-use DB;
+use DB;	
 
-
-class Suppliers extends Controller{
-
-	public function __construct() {
+class Customers extends Controller
+{
+    public function __construct() {
         $this->site_model = new Site;
 
         if(!isset($_SESSION['coffee_staff_logged'])){
@@ -35,52 +34,56 @@ class Suppliers extends Controller{
 
         if(isset($_POST['create'])){
             $name = $this->site_model->fil_string($request->input('name'));
-            $contact = $this->site_model->fil_string($request->input('contact'));
+            $mobile = $this->site_model->fil_string($request->input('mobile'));
+            $email = $this->site_model->fil_string($request->input('email'));
+            $address = $this->site_model->fil_string($request->input('address'));
             $uq_id = $this->site_model->gen_uq_id('SUP');
 
             $date = date("Y-m-d H:i:s");
 
 
-            if(empty($name) || empty($contact)){
+            if(empty($name) || empty($mobile) || empty($email) || empty($address)){
                 //set notification session
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/customers');
                 header("Location: $url");
                 exit();
             }
 
             
-            $r = DB::select("SELECT * FROM suppliers WHERE name='$name'");
+            $r = DB::select("SELECT * FROM customers WHERE email='$email'");
             if(count($r) > 0){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Supplier with name $name exists.
+                                <strong>ERROR: </strong> Customer with email $email exists.
                             </div>";
 
-                $url = url('/suppliers');
+                $url = url('/customers');
                 header("Location: $url");
                 exit();
             }
             else{
                 $in_data = ['uq_id'=>$uq_id,
                     'name'=>$name,
-                    'contact_info'=>$contact,
+                    'mobile'=>$mobile,
+                    'email'=>$email,
+                    'address'=>$address,
                     'created_at'=>$date,
                     'created_by'=>$this->staff_id,
                     'updated_by'=>$this->staff_id,
                     'updated_at'=>$date
                     ];
 
-                DB::table('suppliers')->insert($in_data);
+                DB::table('customers')->insert($in_data);
 
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Supplier Added
+                                SUCESSFULL: Customer Added
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/customers');
                 header("Location: $url");
                 exit();
             }
@@ -89,44 +92,49 @@ class Suppliers extends Controller{
         
 
         if(isset($_POST['update'])){
-            $supplier_id = $request->input('supplier_id');
+            $customer_id = $request->input('customer_id');
             $name = $this->site_model->fil_string($request->input('name'));
-            $contact = $this->site_model->fil_string($request->input('contact'));
+            $mobile = $this->site_model->fil_string($request->input('mobile'));
+            $email = $this->site_model->fil_string($request->input('email'));
+            $address = $this->site_model->fil_string($request->input('address'));
             $uq_id = $this->site_model->gen_uq_id('SUP');
 
             $date = date("Y-m-d H:i:s");
 
 
-            if(empty($name) || empty($contact)){
+            if(empty($name) || empty($mobile) || empty($email) || empty($address)){
                 //set notification session
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/customers');
                 header("Location: $url");
                 exit();
             }
 
-            $r = DB::select("SELECT * FROM suppliers WHERE id='$supplier_id'");
+            $r = DB::select("SELECT * FROM customers WHERE id='$customer_id'");
             if(count($r) > 0){
                 $in_data = ['name'=>$name,
-                    'contact_info'=>$contact,
+                	'mobile'=>$mobile,
+                	'email'=>$email,
+                	'address'=>$address,
                     'updated_at'=>$date,
+                    'created_at'=>$date,
                     'created_by'=>$this->staff_id,
                     'updated_by'=>$this->staff_id
                 ];
 
-                DB::table('suppliers')
-                        ->where('id', $supplier_id)
+                DB::table('customers')
+                        ->where('id', $customer_id)
                         ->update($in_data);
 
 
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Supplier Updated.
+                                SUCESSFULL: Customer Updated.
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/customers');
                 header("Location: $url");
                 exit();    
             }
@@ -136,7 +144,7 @@ class Suppliers extends Controller{
         }
 
         if(isset($_POST['delete'])){
-            $supplier_id = $request->input('supplier_id');
+            $customer_id = $request->input('customer_id');
             $name = $this->site_model->fil_string($request->input('name'));
             $contact = $this->site_model->fil_string($request->input('contact'));
             $uq_id = $this->site_model->gen_uq_id('SUP');
@@ -144,34 +152,32 @@ class Suppliers extends Controller{
             $date = date("Y-m-d H:i:s");
 
 
-            if(empty($supplier_id)){
+            if(empty($customer_id)){
                 //set notification session
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Supplier id not set
+                                <strong>ERROR: </strong> Customer id not set
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/customers');
                 header("Location: $url");
                 exit();
             }
 
-            DB::table('suppliers')->where('id', '=', $supplier_id)->delete();
+            DB::table('customers')->where('id', '=', $customer_id)->delete();
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                            SUCESSFULL: Supplier Deleted.
+                            SUCESSFULL: Customer Deleted.
                         </div>";
-            $url = url('/suppliers');
+            $url = url('/customers');
             header("Location: $url");
             exit();
-
-
             
         }
 
-        $data['page_title'] = "Suppliers";
+        $data['page_title'] = "Customers";
         
-        echo view('suppliers', $data);
+        echo view('customers', $data);
         echo view('footer');
         exit();
         // exit();
