@@ -6,10 +6,9 @@ use Illuminate\Http\Request;
 use App\Site;
 use DB;
 
-
-class Suppliers extends Controller{
-
-	public function __construct() {
+class Drinks extends Controller
+{
+    public function __construct() {
         $this->site_model = new Site;
 
         if(!isset($_SESSION['coffee_staff_logged'])){
@@ -22,8 +21,7 @@ class Suppliers extends Controller{
         }
     }
 
-    
-    public function index(Request $request){
+        public function index(Request $request){
 
         if(isset($_POST['logout'])){
             unset($_SESSION['coffee_admin_logged']);
@@ -35,52 +33,54 @@ class Suppliers extends Controller{
 
         if(isset($_POST['create'])){
             $name = $this->site_model->fil_string($request->input('name'));
-            $contact = $this->site_model->fil_string($request->input('contact'));
-            $uq_id = $this->site_model->gen_uq_id('SUP');
+            $cost = $this->site_model->fil_string($request->input('cost'));
+            $num_of_materials = $this->site_model->fil_string($request->input('num_of_materials'));
+            $uq_id = $this->site_model->gen_uq_id('DRK');
 
             $date = date("Y-m-d H:i:s");
 
 
-            if(empty($name) || empty($contact)){
+            if(empty($name) || empty($cost) || empty($num_of_materials) ){
                 //set notification session
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/drinks');
                 header("Location: $url");
                 exit();
             }
 
             
-            $r = DB::select("SELECT * FROM suppliers WHERE name='$name'");
+            $r = DB::select("SELECT * FROM drinks WHERE name='$name'");
             if(count($r) > 0){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Supplier with name $name exists.
+                                <strong>ERROR: </strong> Drink with name $name exists.
                             </div>";
 
-                $url = url('/suppliers');
+                $url = url('/drinks');
                 header("Location: $url");
                 exit();
             }
             else{
                 $in_data = ['uq_id'=>$uq_id,
                     'name'=>$name,
-                    'contact_info'=>$contact,
+                    'cost'=>$cost,
+                    'num_of_materials'=>$num_of_materials,
                     'created_at'=>$date,
                     'created_by'=>$this->staff_id,
                     'updated_by'=>$this->staff_id,
                     'updated_at'=>$date
                     ];
 
-                DB::table('suppliers')->insert($in_data);
+                DB::table('drinks')->insert($in_data);
 
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Supplier Added
+                                SUCESSFULL: Drink Added
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/drinks');
                 header("Location: $url");
                 exit();
             }
@@ -89,44 +89,48 @@ class Suppliers extends Controller{
         
 
         if(isset($_POST['update'])){
-            $supplier_id = $request->input('supplier_id');
+            $drink_id = $request->input('drink_id');
             $name = $this->site_model->fil_string($request->input('name'));
-            $contact = $this->site_model->fil_string($request->input('contact'));
+            $cost = $this->site_model->fil_string($request->input('cost'));
+            $num_of_materials = $this->site_model->fil_string($request->input('num_of_materials'));
             $uq_id = $this->site_model->gen_uq_id('SUP');
 
             $date = date("Y-m-d H:i:s");
 
 
-            if(empty($name) || empty($contact)){
+            if(empty($name) || empty($cost) || empty($num_of_materials)){
                 //set notification session
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/drinks');
                 header("Location: $url");
                 exit();
             }
 
-            $r = DB::select("SELECT * FROM suppliers WHERE id='$supplier_id'");
+            $r = DB::select("SELECT * FROM drinks WHERE id='$drink_id'");
             if(count($r) > 0){
-                $in_data = ['name'=>$name,
-                    'contact_info'=>$contact,
-                    'updated_at'=>$date,
+                $in_data = ['uq_id'=>$uq_id,
+                    'name'=>$name,
+                    'cost'=>$cost,
+                    'num_of_materials'=>$num_of_materials,
+                    'created_at'=>$date,
                     'created_by'=>$this->staff_id,
-                    'updated_by'=>$this->staff_id
-                ];
+                    'updated_by'=>$this->staff_id,
+                    'updated_at'=>$date
+                    ];
 
-                DB::table('suppliers')
-                        ->where('id', $supplier_id)
+                DB::table('drinks')
+                        ->where('id', $drink_id)
                         ->update($in_data);
 
 
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Supplier Updated.
+                                SUCESSFULL: Drink Updated.
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/drinks');
                 header("Location: $url");
                 exit();    
             }
@@ -136,7 +140,7 @@ class Suppliers extends Controller{
         }
 
         if(isset($_POST['delete'])){
-            $supplier_id = $request->input('supplier_id');
+            $drink_id = $request->input('drink_id');
             $name = $this->site_model->fil_string($request->input('name'));
             $contact = $this->site_model->fil_string($request->input('contact'));
             $uq_id = $this->site_model->gen_uq_id('SUP');
@@ -144,24 +148,24 @@ class Suppliers extends Controller{
             $date = date("Y-m-d H:i:s");
 
 
-            if(empty($supplier_id)){
+            if(empty($drink_id)){
                 //set notification session
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Supplier id not set
+                                <strong>ERROR: </strong> Drink id not set
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/drinks');
                 header("Location: $url");
                 exit();
             }
 
-            DB::table('suppliers')->where('id', '=', $supplier_id)->delete();
+            DB::table('drinks')->where('id', '=', $drink_id)->delete();
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                            SUCESSFULL: Supplier Deleted.
+                            SUCESSFULL: Drink Deleted.
                         </div>";
-            $url = url('/suppliers');
+            $url = url('/drinks');
             header("Location: $url");
             exit();
 
@@ -169,12 +173,13 @@ class Suppliers extends Controller{
             
         }
 
-        $data['page_title'] = "Suppliers";
+        $data['page_title'] = "Drinks";
         
         echo view('header', $data);
-        echo view('suppliers', $data);
+        echo view('drinks', $data);
         echo view('footer');
         exit();
         // exit();
     }
+
 }

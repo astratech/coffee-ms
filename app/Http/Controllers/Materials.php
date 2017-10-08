@@ -6,10 +6,9 @@ use Illuminate\Http\Request;
 use App\Site;
 use DB;
 
-
-class Suppliers extends Controller{
-
-	public function __construct() {
+class Materials extends Controller
+{
+    public function __construct() {
         $this->site_model = new Site;
 
         if(!isset($_SESSION['coffee_staff_logged'])){
@@ -22,8 +21,7 @@ class Suppliers extends Controller{
         }
     }
 
-    
-    public function index(Request $request){
+        public function index(Request $request){
 
         if(isset($_POST['logout'])){
             unset($_SESSION['coffee_admin_logged']);
@@ -35,52 +33,58 @@ class Suppliers extends Controller{
 
         if(isset($_POST['create'])){
             $name = $this->site_model->fil_string($request->input('name'));
-            $contact = $this->site_model->fil_string($request->input('contact'));
-            $uq_id = $this->site_model->gen_uq_id('SUP');
+            $unit_id = $this->site_model->fil_string($request->input('unit_id'));
+            $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
+            $quantity = $this->site_model->fil_string($request->input('quantity'));
+            $cost = $this->site_model->fil_string($request->input('cost'));
+            $uq_id = $this->site_model->gen_uq_id('RMT');
 
             $date = date("Y-m-d H:i:s");
 
 
-            if(empty($name) || empty($contact)){
+            if(empty($name) || empty($unit_id) || empty($supplier_id) || empty($quantity) || empty($cost) ){
                 //set notification session
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/raw_materials');
                 header("Location: $url");
                 exit();
             }
 
             
-            $r = DB::select("SELECT * FROM suppliers WHERE name='$name'");
+            $r = DB::select("SELECT * FROM raw_materials WHERE name='$name'");
             if(count($r) > 0){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Supplier with name $name exists.
+                                <strong>ERROR: </strong> Raw Material with name $name exists.
                             </div>";
 
-                $url = url('/suppliers');
+                $url = url('/raw_materials');
                 header("Location: $url");
                 exit();
             }
             else{
                 $in_data = ['uq_id'=>$uq_id,
                     'name'=>$name,
-                    'contact_info'=>$contact,
+                    'supplier_id'=>$supplier_id,
+                    'unit_id'=>$unit_id,
+                    'quantity'=>$quantity,
+                    'cost'=>$cost,
                     'created_at'=>$date,
                     'created_by'=>$this->staff_id,
                     'updated_by'=>$this->staff_id,
                     'updated_at'=>$date
                     ];
 
-                DB::table('suppliers')->insert($in_data);
+                DB::table('raw_materials')->insert($in_data);
 
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Supplier Added
+                                SUCESSFULL: Raw Material Added
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/raw_materials');
                 header("Location: $url");
                 exit();
             }
@@ -89,44 +93,52 @@ class Suppliers extends Controller{
         
 
         if(isset($_POST['update'])){
-            $supplier_id = $request->input('supplier_id');
+            $raw_material_id = $request->input('raw_material_id');
             $name = $this->site_model->fil_string($request->input('name'));
-            $contact = $this->site_model->fil_string($request->input('contact'));
-            $uq_id = $this->site_model->gen_uq_id('SUP');
+            $unit_id = $this->site_model->fil_string($request->input('unit_id'));
+            $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
+            $quantity = $this->site_model->fil_string($request->input('quantity'));
+            $cost = $this->site_model->fil_string($request->input('cost'));
+            $uq_id = $this->site_model->gen_uq_id('RMT');
 
             $date = date("Y-m-d H:i:s");
 
 
-            if(empty($name) || empty($contact)){
+            if(empty($name) || empty($unit_id) || empty($supplier_id) || empty($quantity) ){
                 //set notification session
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/raw_materials');
                 header("Location: $url");
                 exit();
             }
 
-            $r = DB::select("SELECT * FROM suppliers WHERE id='$supplier_id'");
+            $r = DB::select("SELECT * FROM raw_materials WHERE id='$raw_material_id'");
             if(count($r) > 0){
-                $in_data = ['name'=>$name,
-                    'contact_info'=>$contact,
-                    'updated_at'=>$date,
+                $in_data = ['uq_id'=>$uq_id,
+                    'name'=>$name,
+                    'supplier_id'=>$supplier_id,
+                    'unit_id'=>$unit_id,
+                    'quantity'=>$quantity,
+                    'cost'=>$cost,
+                    'created_at'=>$date,
                     'created_by'=>$this->staff_id,
-                    'updated_by'=>$this->staff_id
-                ];
+                    'updated_by'=>$this->staff_id,
+                    'updated_at'=>$date
+                    ];
 
-                DB::table('suppliers')
-                        ->where('id', $supplier_id)
+                DB::table('raw_materials')
+                        ->where('id', $raw_material_id)
                         ->update($in_data);
 
 
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Supplier Updated.
+                                SUCESSFULL: Raw Material Updated.
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/raw_materials');
                 header("Location: $url");
                 exit();    
             }
@@ -136,7 +148,7 @@ class Suppliers extends Controller{
         }
 
         if(isset($_POST['delete'])){
-            $supplier_id = $request->input('supplier_id');
+            $raw_material_id = $request->input('raw_material_id');
             $name = $this->site_model->fil_string($request->input('name'));
             $contact = $this->site_model->fil_string($request->input('contact'));
             $uq_id = $this->site_model->gen_uq_id('SUP');
@@ -144,24 +156,24 @@ class Suppliers extends Controller{
             $date = date("Y-m-d H:i:s");
 
 
-            if(empty($supplier_id)){
+            if(empty($raw_material_id)){
                 //set notification session
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Supplier id not set
+                                <strong>ERROR: </strong> Raw Material id not set
                             </div>";
-                $url = url('/suppliers');
+                $url = url('/raw_materials');
                 header("Location: $url");
                 exit();
             }
 
-            DB::table('suppliers')->where('id', '=', $supplier_id)->delete();
+            DB::table('raw_materials')->where('id', '=', $raw_material_id)->delete();
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                            SUCESSFULL: Supplier Deleted.
+                            SUCESSFULL: Raw Material Deleted.
                         </div>";
-            $url = url('/suppliers');
+            $url = url('/raw_materials');
             header("Location: $url");
             exit();
 
@@ -169,10 +181,10 @@ class Suppliers extends Controller{
             
         }
 
-        $data['page_title'] = "Suppliers";
+        $data['page_title'] = "Raw Materials";
         
         echo view('header', $data);
-        echo view('suppliers', $data);
+        echo view('raw_materials', $data);
         echo view('footer');
         exit();
         // exit();

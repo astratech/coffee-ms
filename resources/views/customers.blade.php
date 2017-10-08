@@ -1,6 +1,4 @@
-@extends('master')
 
-@section('script')
      <script type="text/javascript">
         //Ajax
         $(document).ready(function () {
@@ -44,9 +42,7 @@
         });//end ready
 
     </script> 
-@endsection
 
-@section('content')
 
         <!-- Page Content -->
         <div id="page-wrapper">
@@ -188,7 +184,7 @@
                                         <div class="form-group">
                                             <div class="col-sm-12">
                                                 <label>Address</label>
-                                                <input type="text" name="address" class="form-control">
+                                                <textarea rows="3" name="contact" class="form-control"></textarea>
                                             </div>
                                         </div>
 
@@ -316,4 +312,3 @@
 
                 </div>
             </div>
-@endsection

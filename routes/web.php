@@ -21,6 +21,8 @@ Route::any('/logout', 'Login@logout');
 Route::any('/dashboard', 'Dashboard@index');
 Route::any('/suppliers', 'Suppliers@index');
 Route::any('/customers', 'Customers@index');
+Route::any('/drinks', 'Drinks@index');
+Route::any('/raw_materials', 'Materials@index');
 Route::any('/card/enc/{txt}', 'Card@enc');
 Route::any('/card/dec/{txt}', 'Card@dec');
 Route::any('/admin', 'Admin\Login@index');

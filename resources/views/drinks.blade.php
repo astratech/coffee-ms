@@ -8,9 +8,10 @@
                 try{
                     var d = $(this).data('all');
 
-                    $("#editModal [name='supplier_id']").val(d.id);
+                    $("#editModal [name='drink_id']").val(d.id);
                     $("#editModal [name='name']").val(d.name);
-                    $("#editModal [name='contact']").val(d.contact_info);
+                    $("#editModal [name='cost']").val(d.cost);
+                    $("#editModal [name='num_of_materials']").val(d.num_of_materials);
                     
                     $("#editModal").modal('show');
                 }
@@ -24,7 +25,7 @@
                 try{
                     var d = $(this).data('all');
 
-                    $("#delModal [name='supplier_id']").val(d.id);
+                    $("#delModal [name='drink_id']").val(d.id);
                     $("#delModal [name='name']").val(d.name);
                     $("#delModal [name='contact']").val(d.contact_info);
                     
@@ -63,9 +64,9 @@
                         <div class="white-box">
                             <div class="col-in row">
                                 <div class="col-md-6 col-sm-6 col-xs-6"> <i data-icon="E" class="linea-icon linea-basic"></i>
-                                    <h5 class="text-muted vb">Total Number of Supplier</h5> </div>
+                                    <h5 class="text-muted vb">Total Number of Drink</h5> </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <h3 class="counter text-right m-t-15 text-danger">{{ count(App\Site::get_records('suppliers')) }}</h3> </div>
+                                    <h3 class="counter text-right m-t-15 text-danger">{{ count(App\Site::get_records('drinks')) }}</h3> </div>
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <div class="progress">
                                     
@@ -96,7 +97,7 @@
                         @endif
                         <div class="white-box">
                                                       
-                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Supplier</a>
+                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Drink</a>
                             <br>                           
                             <br> 
 
@@ -105,8 +106,9 @@
                                     <thead>
                                         <tr>
                                             <th>NAME</th>
-                                            <th>SUPPLIER ID</th>
-                                            <th>CONTACT INFO</th>
+                                            <th>DRINK ID</th>
+                                            <th>COST</th>
+                                            <th>NUM OF MATERIALS</th>
                                             <th>DATE CREATED</th>
                                             <th>CREATED BY</th>
                                             <th>ACTIONS</th>
@@ -114,14 +116,15 @@
                                     </thead>
                                     <tbody>
 
-                                        @if(count(App\Site::get_records('suppliers')) > 0)
-                                           @foreach (App\Site::get_records('suppliers') as $r)
+                                        @if(count(App\Site::get_records('drinks')) > 0)
+                                           @foreach (App\Site::get_records('drinks') as $r)
                                                 <tr>
                                                     <td>{{$r->name}}</td>
                                                     <td>{{ $r->uq_id }}</td>
-                                                    <td>{{ $r->contact_info }}</td>
+                                                    <td>{{ $r->cost }}</td>
+                                                    <td>{{ $r->num_of_materials }}</td>
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
-                                                    <td>{{ $r->created_by }}</td>
+                                                    <td>{{ App\Site::get_staff_name($r->created_by) }}</td>
                                                     <td>
                                                         <button class="btn btn-default btn-sm editBtn" data-all="{{ (json_encode($r)) }}">Edit</button>
                                                         <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
@@ -147,7 +150,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Add Supplier</h4>
+                            <h4 class="modal-title">Add Drink</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -157,15 +160,22 @@
                                     <div class="col-md-12">                        
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Supplier Name</label>
+                                                <label>Drink Name</label>
                                                 <input type="text" name="name" class="form-control">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Contact Info</label>
-                                                <textarea rows="3" name="contact" class="form-control"></textarea>
+                                                <label>Cost</label>
+                                                <input type="number" name="cost" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Num of Materials</label>
+                                                <input type="number" name="num_of_materials" class="form-control">
                                             </div>
                                         </div>
 
@@ -193,7 +203,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Edit Supplier</h4>
+                            <h4 class="modal-title">Edit Drink</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -202,21 +212,28 @@
                                     <div class="col-md-12">                        
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Supplier Name</label>
+                                                <label>Drink Name</label>
                                                 <input type="text" name="name" class="form-control">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Contact Info</label>
-                                                <input type="text" name="contact" class="form-control">
+                                                <label>Cost</label>
+                                                <input type="number" name="cost" class="form-control">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="hidden" name="supplier_id">
+                                                <label>Num of Materials</label>
+                                                <input type="number" name="num_of_materials" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="hidden" name="drink_id">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                             </div>
                                         </div>
@@ -245,7 +262,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Delete Supplier</h4>
+                            <h4 class="modal-title">Delete Drink</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -256,14 +273,14 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="hidden" name="supplier_id">
+                                                <input type="hidden" name="drink_id">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="submit" name="delete" value="Delete Supplier" class="btn btn-success">
+                                                <input type="submit" name="delete" value="Delete drink" class="btn btn-success">
                                             </div>
                                         </div>
                                     </div>

@@ -49,7 +49,7 @@
     <script src="{{ URL::asset('site/plugins/bower_components/raphael/raphael-min.js') }}"></script>
     
 
-    @yield('script')
+   
    
     
 </head>
@@ -92,6 +92,14 @@
                         <a href="{{ url('/customers') }}" class="waves-effect"><span class="hide-menu">Customers</span></a>
                     </li>
 
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/drinks') }}" class="waves-effect"><span class="hide-menu">Drinks</span></a>
+                    </li>
+
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/raw_materials') }}" class="waves-effect"><span class="hide-menu">Raw Materials</span></a>
+                    </li>
+
 
 
                 </ul>
@@ -99,4 +107,4 @@
         </div>
         <!-- Left navbar-header end -->
 
-        @yield('content')
+     

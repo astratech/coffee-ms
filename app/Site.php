@@ -90,4 +90,31 @@ class Site extends Model{
     	$r = DB::select($query);
         return $r; 
     }
+
+    public static function get_supplier_name($id){
+        $res = DB::select("SELECT * FROM suppliers WHERE id = '$id'");
+        if(count($res)){
+            foreach ($res as $value) {
+                return $value->name;
+            }
+        }
+    }
+
+    public static function get_unit_name($id){
+        $res = DB::select("SELECT * FROM units WHERE id = '$id'");
+        if(count($res)){
+            foreach ($res as $value) {
+                return $value->name;
+            }
+        }
+    }
+
+    public static function get_staff_name($id){
+        $res = DB::select("SELECT * FROM staffs WHERE id = '$id'");
+        if(count($res)){
+            foreach ($res as $value) {
+                return $value->name;
+            }
+        }
+    }
 }

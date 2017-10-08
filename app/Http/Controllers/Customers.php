@@ -177,6 +177,7 @@ class Customers extends Controller
 
         $data['page_title'] = "Customers";
         
+        echo view('header', $data);
         echo view('customers', $data);
         echo view('footer');
         exit();

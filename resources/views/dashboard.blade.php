@@ -1,6 +1,4 @@
-@extends('master');
 
-@section('script')
      <script type="text/javascript">
         //Ajax
         $(document).ready(function () {
@@ -55,9 +53,8 @@
 
         });//end ready
     </script> 
-@endsection
 
-@section('content')
+
         <!-- Page Content -->
         <div id="page-wrapper">
             <div class="container-fluid">
@@ -410,4 +407,3 @@
 
                 </div>
             </div>
-@endsection
