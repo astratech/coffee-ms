@@ -9,7 +9,7 @@
     <meta name="author" content="Astratech NG">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/plugins/images/favicon.png">
-    <title>Coffee-Ms</title>
+    <title>{!! $page_title !!} | Coffee-Ms</title>
     <!-- Bootstrap Core CSS -->
     <link href="{{ URL::asset('site/css/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('site/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css') }}" rel="stylesheet">

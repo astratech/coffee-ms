@@ -101,7 +101,7 @@ class Machines extends Controller
             
             $date = date("Y-m-d H:i:s");
 
-            $r = DB::select("SELECT * FROM machine_drinks WHERE machine_id='$machine_id' OR drink_id='$drink_id'");
+            $r = DB::select("SELECT * FROM machine_drinks WHERE machine_id='$machine_id' AND drink_id='$drink_id'");
             if(count($r) > 0){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
@@ -123,7 +123,7 @@ class Machines extends Controller
 
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Machine Added
+                                SUCESSFULL: Drink Added to Machine.
                             </div>";
                 $url = url('/machines');
                 header("Location: $url");

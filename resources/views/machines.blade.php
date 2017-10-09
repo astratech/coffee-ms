@@ -156,9 +156,11 @@
                                                     <td>{{ $r->leasing_rate }}</td>
                                                     <td>
                                                         @if(count(DB::select("SELECT * FROM machine_drinks WHERE machine_id='$r->id'")) > 0)
-                                                        @foreach(DB::select("SELECT * FROM machine_drinks WHERE machine_id='$r->id'") as $r)
-                                                               <li>{{  App\Site::get_record("drinks", $r->drink_id)->name }}</li>
+                                                            @foreach(DB::select("SELECT * FROM machine_drinks WHERE machine_id='$r->id'") as $d)
+                                                               <li>{{  App\Site::get_record("drinks", $d->drink_id)->name }}</li>
                                                             @endforeach
+                                                            
+                                                        @else
                                                             <p>No Drink</p>
                                                         @endif
                                                         <p><button class="btn btn-info btn-xs add-drink" data-all="{{ (json_encode($r)) }}">+ Add Drink</button></p>
