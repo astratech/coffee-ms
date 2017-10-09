@@ -12,16 +12,18 @@ class Login extends Controller{
     public function __construct() {
         $this->site_model = new Site;
 
-        if(isset($_SESSION['coffee_staff_logged'])){
-            $url = url('/dashboard');
-            header("Location: $url");
-            exit();
-        }
+        
           
     }
 
     
     public function index(Request $request){
+
+        if(isset($_SESSION['coffee_staff_logged'])){
+            $url = url('/dashboard');
+            header("Location: $url");
+            exit();
+        }
 
         if(isset($_POST['login'])){
             $email = $request->input('email');
@@ -71,6 +73,7 @@ class Login extends Controller{
     public function logout(Request $request){
 
          if(isset($_POST['logout'])){
+
             unset($_SESSION['coffee_staff_logged']);
 
             $url = url('/login');

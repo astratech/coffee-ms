@@ -136,61 +136,7 @@
                 <!-- /.row -->
                 <!--row -->
                 <div class="row">
-                    <div class="col-sm-12">
-
-                        @if(isset($_SESSION['notification']))
-
-                            {!! $_SESSION['notification'] !!}
-
-                            @php unset($_SESSION['notification']) @endphp
-
-                        @endif
-                        <div class="white-box">
-                                                      
-                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Staff</a>
-                            <br>                           
-                            <br> 
-
-                            <div class="table-responsive">
-                                <table class="table" id="cs-data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>NAME</th>
-                                            <th>STAFF ID</th>
-                                            <th>DEPARTMENT</th>
-                                            <th>EMAIL</th>
-                                            <th>PASSWORD</th>
-                                            <th>LAST LOGIN</th>
-                                            <th>ACTIONS</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        @if(count(DB::select("SELECT * FROM staffs")) > 0)
-                                           @foreach (DB::select("SELECT * FROM staffs") as $r)
-                                                <tr>
-                                                    <td>{{$r->name}}</td>
-                                                    <td>{{ $r->uq_id }}</td>
-                                                    <td>{{ $r->dept }}</td>
-                                                    <td>{{ $r->email }}</td>
-                                                    <td>
-                                                        <p>{{ App\Site::decode_password($r->password) }}</p>
-                                                        <button class="btn btn-info btn-xs change-password" data-all="{{ (json_encode($r)) }}">Change Password</button>
-                                                    </td>
-                                                    <td>{{ is_null($r->last_login) ? '' : date("Y-m-d", strtotime($r->last_login)) }}</td>
-                                                    <td>
-                                                        <button class="btn btn-default btn-sm editBtn" data-all="{{ (json_encode($r)) }}">Edit</button>
-                                                        <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
-                                                    </td>
-                                                </tr>
-                                           @endforeach
-                                        @endif
-                                    </tbody>
-                                </table> 
-
-                                </div>
-                        </div>
-                    </div>
+                    
                 </div>
                 <!-- /.row -->
 

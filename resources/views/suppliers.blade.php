@@ -121,7 +121,7 @@
                                                     <td>{{ $r->uq_id }}</td>
                                                     <td>{{ $r->contact_info }}</td>
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
-                                                    <td>{{ $r->created_by }}</td>
+                                                    <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>
                                                     <td>
                                                         <button class="btn btn-default btn-sm editBtn" data-all="{{ (json_encode($r)) }}">Edit</button>
                                                         <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
