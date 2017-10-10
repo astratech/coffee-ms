@@ -36,6 +36,21 @@
                 }
             });
 
+            $(".add-mat").click(function (e) {
+                e.preventDefault();
+                try{
+                    var d = $(this).data('all');
+
+                    $("#itemModal [name='drink_id']").val(d.id);
+                    
+                    
+                    $("#itemModal").modal('show');
+                }
+                catch(err){
+                    alert(err);
+                }
+            });
+
             
 
         });//end ready
@@ -110,6 +125,7 @@
                                             <th>DRINK CODE</th>
                                             <th>COST</th>
                                             <th>DATE CREATED</th>
+                                            <th>MATERIALS USED</th>
                                             <th>CREATED BY</th>
                                             <th>ACTIONS</th>
                                         </tr>
@@ -124,6 +140,18 @@
                                                     <td>{{ $r->cost }}</td>
                                                     
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
+
+                                                    <td>
+                                                        @if(count(DB::select("SELECT * FROM drink_materials WHERE drink_id='$r->id'")) > 0)
+                                                            @foreach(DB::select("SELECT * FROM drink_materials WHERE drink_id='$r->id'") as $d)
+                                                               <li>{{  App\Site::get_record("raw_materials", $d->material_id)->name }} - {{ $d->quantity }} {{ App\Site::get_record("raw_materials", $d->material_id)->unit }}</li>
+                                                            @endforeach
+                                                            
+                                                        @else
+                                                            <p>No Material Added</p>
+                                                        @endif
+                                                        <p><button class="btn btn-info btn-xs add-mat" data-all="{{ (json_encode($r)) }}">+ Add Material</button></p>
+                                                    </td>
                                                     <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>
                                                     <td>
                                                         <button class="btn btn-default btn-sm editBtn" data-all="{{ (json_encode($r)) }}">Edit</button>
@@ -242,13 +270,71 @@
                 </div>
             </div>
 
+            <div id="itemModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Add Raw Material</h4>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <div class="row">
+                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                    {{ csrf_field() }}
+                                    <div class="col-md-12">  
+                                        
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Raw Material</label>
+                                                <select name="material_id" class="form-control">
+                                                    @foreach (App\Site::get_records('raw_materials') as $r)
+                                                        <option value="{{ $r->id }}"> {{ $r->name }} - {{ $r->uq_id }} - {!! App\Site::get_material_qty_left($r->id) !!} {{ $r->unit }} Available</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Quantity</label>
+                                                <input type="number" name="quantity" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="hidden" name="drink_id">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="submit" name="add_material" value="Add Material to Drink" class="btn btn-success">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </div>
+
             <div id="delModal" class="modal fade" role="dialog">
                 <div class="modal-dialog">
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Delete Machine</h4>
+                            <h4 class="modal-title">Delete Drink</h4>
                         </div>
                         
                         <div class="modal-body">

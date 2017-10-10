@@ -90,4 +90,17 @@ class Site extends Model{
     	$r = DB::select($query);
         return $r; 
     }
+
+    public static function get_material_qty_left($material_id){
+        $material_qty = Site::get_record("raw_materials", $material_id)->quantity;
+
+        $used_quantity = 0;
+        $q = DB::select("SELECT * FROM drink_materials WHERE material_id='$material_id'");
+        foreach($q as $d){
+            $used_quantity = $d->quantity + $used_quantity;
+        }
+
+        return ($material_qty - $used_quantity);
+       
+    }
 }

@@ -111,8 +111,9 @@
                                             <th>NAME</th>
                                             <th>MATERIAL CODE</th>
                                             <th>SUPPLIER</th>
-                                            <th>QUANTITY</th>
+                                            <th>QUANTITY SUPPLIED</th>
                                             <th>COST</th>
+                                            <th>QUANTITY AVAILABLE</th>
                                             <th>DATE CREATED</th>
                                             <th>CREATED BY</th>
                                             <th>ACTIONS</th>
@@ -128,6 +129,7 @@
                                                     <td>{{ App\Site::get_record("suppliers", $r->supplier_id)->uq_id }}</td>
                                                     <td>{{ $r->quantity }}  {{ $r->unit }}</td>
                                                     <td>{{ $r->cost }}</td>
+                                                    <td> {!! App\Site::get_material_qty_left($r->id) !!} {{ $r->unit }}</td>
                                                     
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
                                                     <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>

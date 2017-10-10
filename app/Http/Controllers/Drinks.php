@@ -85,8 +85,6 @@ class Drinks extends Controller
             }
         }
 
-        
-
         if(isset($_POST['update'])){
             $c_id = $this->site_model->fil_string($request->input('c_id'));
             $name = $this->site_model->fil_string($request->input('name'));
@@ -138,8 +136,79 @@ class Drinks extends Controller
                 exit();    
             }
 
+        }
 
+        if(isset($_POST['add_material'])){
+            $material_id = $this->site_model->fil_num($request->input('material_id'));
+            $drink_id = $this->site_model->fil_num($request->input('drink_id'));
+            $quantity = $this->site_model->fil_num($request->input('quantity'));
             
+            $date = date("Y-m-d H:i:s");
+
+            if(empty($material_id) OR empty($drink_id)){
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                <strong>ERROR: </strong> Operation Failed.
+                            </div>";
+
+                $url = url('/drinks');
+                header("Location: $url");
+                exit();
+            }
+
+            if(empty($quantity)){
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                <strong>ERROR: </strong> Fill the empty fields
+                            </div>";
+
+                $url = url('/drinks');
+                header("Location: $url");
+                exit();
+            }
+
+            if($quantity < 1 ){
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                <strong>ERROR: </strong> Invalid Input for quantity.
+                            </div>";
+
+                $url = url('/drinks');
+                header("Location: $url");
+                exit();
+            }
+
+            $r = DB::select("SELECT * FROM drink_materials WHERE material_id='$material_id' AND drink_id='$drink_id'");
+            if(count($r) > 0){
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                <strong>ERROR: </strong> This Raw Material is already added to this Drink.
+                            </div>";
+
+                $url = url('/drinks');
+                header("Location: $url");
+                exit();
+            }
+            else{
+                $in_data = ['material_id'=>$material_id,
+                    'drink_id'=>$drink_id,
+                    'quantity'=>$quantity,
+                    'created_at'=>$date,
+                    'created_by'=>$this->staff_id,
+                    'updated_at'=>$date,
+                    'updated_by'=>$this->staff_id,
+                    ];
+
+                DB::table('drink_materials')->insert($in_data);
+
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                SUCESSFULL: Record Added
+                            </div>";
+                $url = url('/drinks');
+                header("Location: $url");
+                exit();
+            }
         }
 
         if(isset($_POST['delete'])){
