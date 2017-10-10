@@ -10,11 +10,9 @@
                 try{
                     var d = $(this).data('all');
 
-                    $("#editModal [name='staff_id']").val(d.id);
-                    $("#editModal [name='name']").val(d.name);
-                    $("#editModal [name='dept']").val(d.dept);
-                    $("#editModal [name='email']").val(d.email);
-                    $("#editModal .modal-title").text("Edit Staff: "+d.uq_id);
+                    $("#editModal [name='customer_id']").val(d.customer_id);
+                    $("#editModal [name='machine_id']").val(d.machine_id);
+                    $("#editModal [name='c_id']").val(d.id);
                     
                     $("#editModal").modal('show');
                 }
@@ -28,25 +26,8 @@
                 try{
                     var d = $(this).data('all');
 
-                    $("#appModal [name='staff_id']").val(d.id);
-                    $("#appModal .modal-title").text("Delete Staff: "+d.uq_id);
-                    
-                    $("#appModal").modal('show');
-                }
-                catch(err){
-                    alert(err);
-                }
-            });
-
-            $(".change-password").click(function (e) {
-                e.preventDefault();
-                try{
-                    var d = $(this).data('all');
-
-                    $("#passModal [name='staff_id']").val(d.id);    
-                    $("#passModal .modal-title").text("Change Staff Password: "+d.uq_id);                
-                    
-                    $("#passModal").modal('show');
+                    $("#editModal [name='c_id']").val(d.id);                    
+                    $("#editModal").modal('show');
                 }
                 catch(err){
                     alert(err);
@@ -143,6 +124,90 @@
                 </div>
                 <!-- /.row -->
 
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="white-box">
+                            <div class="col-in row">
+                                @if(isset($_SESSION['notification']))
+
+                                    {!! $_SESSION['notification'] !!}
+
+                                    @php unset($_SESSION['notification']) @endphp
+
+                                @endif
+                                <h5>System Settings</h5>
+                                <br>
+                                <br>
+                                <br>
+                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                    {{ csrf_field() }}
+                                    <div class="col-md-12">                        
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Currency</label>
+                                                <input type="text" name="currency" class="form-control" value="{{ App\Site::get_settings("currency")->value }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="submit" name="update_settings" value="Submit" class="btn btn-success">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="white-box">
+                            <div class="col-in row">
+                                <h4>Rents</h4>
+                                <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Record</a>
+                            <br>                           
+                            <br> 
+
+                            <div class="table-responsive">
+                                <table class="table table-borderedb" id="cs-data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>CUSTOMER ID</th>
+                                            <th>MACHINE ID</th>
+                                            <th>DATE CREATED</th>
+                                            <th>ACTIONS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @if(count(App\Site::get_records('rents')) > 0)
+                                           @foreach (App\Site::get_records('rents') as $r)
+                                                <tr>
+                                                    <td>{{ $r->uq_id }}</td>
+                                                    <td>
+                                                        <p>{{ App\Site::get_record("customers", $r->customer_id)->uq_id }}</p>
+                                                        <p>{{ App\Site::get_record("customers", $r->customer_id)->name }}</p>
+                                                    </td>
+                                                    <td>{{ App\Site::get_record("machines", $r->machine_id)->uq_id }}</td>
+                                                    
+                                                    <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
+                                                    <td>
+                                                        <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
+                                                    </td>
+                                                </tr>
+                                           @endforeach
+                                        @endif
+                                    </tbody>
+                                </table> 
+
+                            </div>
+ 
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- /.container-fluid -->
 
@@ -152,7 +217,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Add Staff</h4>
+                            <h4 class="modal-title">Add Record</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -162,29 +227,23 @@
                                     <div class="col-md-12">                        
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Staff Name</label>
-                                                <input type="text" name="name" class="form-control">
+                                                <label>Customer</label>
+                                                <select name="customer_id" class="form-control">
+                                                    @foreach (App\Site::get_records('customers') as $r)
+                                                        <option value="{{ $r->id }}"> {{ $r->name }} - {{ $r->uq_id }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Department</label>
-                                                <input type="text" name="dept" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Email</label>
-                                                <input type="text" name="email" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Password</label>
-                                                <input type="text" name="password" class="form-control" value="{{ App\Site::gen_token() }}" readonly>
+                                                <label>Machine</label>
+                                                <select name="machine_id" class="form-control">
+                                                    @foreach (App\Site::get_records('machines') as $r)
+                                                        <option value="{{ $r->id }}">  {{ $r->uq_id }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
 
@@ -212,44 +271,25 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Edit Staff</h4>
+                            <h4 class="modal-title">Delete Record</h4>
                         </div>
                         
                         <div class="modal-body">
                             <div class="row">
                                 <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
                                     <div class="col-md-12">                        
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Staff Name</label>
-                                                <input type="text" name="name" class="form-control">
-                                            </div>
-                                        </div>
+                                       <p>You are about to delete a record <br><br>Are you sure of this?</p>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Department</label>
-                                                <input type="text" name="dept" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Email</label>
-                                                <input type="text" name="email" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="hidden" name="staff_id">
+                                                <input type="hidden" name="c_id">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="submit" name="update" value="Update Details" class="btn btn-success">
+                                                <input type="submit" name="delete" value="Delete" class="btn btn-success">
                                             </div>
                                         </div>
                                     </div>
@@ -265,95 +305,5 @@
                 </div>
             </div>
 
-            <div id="passModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Change Staff Password</h4>
-                        </div>
-                        
-                        <div class="modal-body">
-                            <div class="row">
-                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
-                                    <div class="col-md-12">                        
 
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>New Password</label>
-                                                <input type="password" name="password" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Retype New Password</label>
-                                                <input type="password" name="rpassword" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="hidden" name="staff_id">
-                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="submit" name="update_password" value="Change Password" class="btn btn-success">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                        
-                    </div>
-
-                </div>
-            </div>
-
-            <div id="appModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Delete Staff</h4>
-                        </div>
-                        
-                        <div class="modal-body">
-                            <div class="row">
-                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
-                                    <div class="col-md-12">                        
-                                    <p>You are about to delete a record <br><br>Are you sure of this?</p>
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="hidden" name="staff_id">
-                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="submit" name="delete" value="Delete Staff" class="btn btn-success">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                        
-                    </div>
-
-                </div>
-            </div>
 @endsection

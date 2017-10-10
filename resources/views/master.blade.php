@@ -20,6 +20,10 @@
     <link href="{{ URL::asset('site/css/style.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('site/css/colors/blue-dark.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jq-3.2.1/jq-3.2.1/dt-1.10.16/b-1.4.2/b-html5-1.4.2/b-print-1.4.2/kt-2.3.2/r-2.2.0/rr-1.2.3/sl-1.2.3/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.css"/>
+
+
 
      
     
@@ -31,6 +35,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
     <!-- Custom Theme JavaScript -->
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="{{ URL::asset('site/js/site.js') }}"></script>
@@ -82,6 +87,10 @@
                 <ul class="nav" id="side-menu">
                     <li style="padding: 10px 0 0;">
                         <a href="{{ url('/dashboard') }}" class="waves-effect"><span class="hide-menu">Dashboard</span></a>
+                    </li>
+
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/accounting') }}" class="waves-effect"><span class="hide-menu">Accounting</span></a>
                     </li>
 
                     <li style="padding: 10px 0 0;">

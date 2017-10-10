@@ -25,20 +25,6 @@ class Dashboard extends Controller{
     
     public function index(Request $request){
 
-        // var_dump($this->site_model->get_record('staffs', '1'));
-        // echo $this->site_model->get_record('staffs', '1')->name;
-        // echo $s['0']->name;
-
-        // $r = DB::select("SELECT * FROM staffs WHERE id='1'");
-        // $output = [];
-        // if(count($r) > 0){
-        //     foreach ($r as $value) {
-        //         $g = $value;
-        //     }
-        // }
-        // var_dump($g);
-        // echo $g->name;
-        // exit();
 
         if(isset($_POST['logout'])){
             unset($_SESSION['coffee_admin_logged']);
@@ -49,190 +35,160 @@ class Dashboard extends Controller{
         }
 
         if(isset($_POST['create'])){
-            $name = $this->site_model->fil_string($request->input('name'));
-            $dept = $this->site_model->fil_string($request->input('dept'));
-            $email = $this->site_model->fil_email($request->input('email'));
-            $password = $request->input('password');
-            $uq_id = $this->site_model->gen_uq_id('STF');
+            $uq_id = $this->site_model->gen_uq_id("RNT");
+            $customer_id = $this->site_model->fil_string($request->input('customer_id'));
+            $machine_id = $this->site_model->fil_string($request->input('machine_id'));
 
             $date = date("Y-m-d H:i:s");
 
+            foreach ($_POST as $key => $val) {
+                if (empty($val)) {
 
-            if(empty($name) || empty($dept) || empty($email) || empty($password)){
-                //set notification session
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                    $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                $url = url('/admin/staffs');
-                header("Location: $url");
-                exit();
+                    $url = url('/dashboard');
+                    header("Location: $url");
+                    exit();
+                }
             }
 
-            $password = $this->site_model->encode_password($password);
+            $in_data = ['customer_id'=>$customer_id,
+                'machine_id'=>$machine_id,
+                'uq_id'=>$uq_id,
+                'created_at'=>$date,
+                'created_by'=>$this->staff_id,
+                'updated_by'=>$this->staff_id,
+                'updated_at'=>$date
+                ];
 
-            $r = DB::select("SELECT * FROM staffs WHERE email='$email'");
-            if(count($r) > 0){
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Staff with email $email exists.
-                            </div>";
-
-                $url = url('/admin/staffs');
-                header("Location: $url");
-                exit();
-            }
-            else{
-                $in_data = ['name'=>$name,
-                    'dept'=>$dept,
-                    'email'=>$email,
-                    'password'=>$password,
-                    'uq_id'=>$uq_id,
-                    'created_at'=>$date,
-                    'created_by'=>'1'
-                    ];
-
-                DB::table('staffs')->insert($in_data);
-
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Staff Added
-                            </div>";
-                $url = url('/admin/staffs');
-                header("Location: $url");
-                exit();
-            }
-        }
-
-        if(isset($_POST['update_password'])){
-            $password = $request->input('password');
-            $rpassword = $request->input('rpassword');
-            $staff_id = $request->input('staff_id');
-
-            $date = date("Y-m-d H:i:s");
-
-            if(empty($password) || empty($rpassword) || empty($staff_id)){
-                //set notification session
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Fill the empty fields
-                            </div>";
-                $url = url('/admin/staffs');
-                header("Location: $url");
-                exit();
-            }
-
-            if($password != $rpassword){
-                //set notification session
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Password Mismatch
-                            </div>";
-                $url = url('/admin/staffs');
-                header("Location: $url");
-                exit();
-            }
-
-            $password = $this->site_model->encode_password($password);
-
-            $in_data = [
-                'password'=>$password,
-                'updated_at'=>$date,
-                'updated_by'=>'1'
-            ];
-
-            DB::table('staffs')
-                    ->where('id', $staff_id)
-                    ->update($in_data);
-
+            DB::table('rents')->insert($in_data);
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                            SUCESSFULL: Password Updated.
+                            SUCESSFULL: Record Added
                         </div>";
-            $url = url('/admin/staffs');
+            $url = url('/dashboard');
             header("Location: $url");
             exit();
         }
 
         if(isset($_POST['update'])){
-            $staff_id = $request->input('staff_id');
+            $c_id = $this->site_model->fil_string($request->input('c_id'));
             $name = $this->site_model->fil_string($request->input('name'));
-            $dept = $this->site_model->fil_string($request->input('dept'));
-            $email = $this->site_model->fil_email($request->input('email'));
+            $cost = $this->site_model->fil_string($request->input('cost'));
+            
+            $date = date("Y-m-d H:i:s");
+
+            foreach ($_POST as $key => $val) {
+                if (empty($val)) {
+
+                    $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                <strong>ERROR: </strong> Fill the empty fields
+                            </div>";
+                    $url = url('/drinks');
+                    header("Location: $url");
+                    exit();
+                }
+            }
+
+            $r = DB::select("SELECT * FROM drinks WHERE name='$name' AND id!='$c_id'");
+            if(count($r) > 0){
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                ERROR: $name is assigned.
+                            </div>";
+                $url = url('/drinks');
+                header("Location: $url");
+                exit();   
+            }
+            else{
+                $in_data = ['name'=>$name,
+                    'cost'=>$cost,
+                    'updated_by'=>$this->staff_id,
+                    'updated_at'=>$date
+                ];
+
+                DB::table('drinks')
+                        ->where('id', $c_id)
+                        ->update($in_data);
+
+
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                SUCESSFULL: Record Updated.
+                            </div>";
+                $url = url('/drinks');
+                header("Location: $url");
+                exit();    
+            }
+
+        }
+
+        if(isset($_POST['update_settings'])){
+            $currency = $request->input('currency');
 
             $date = date("Y-m-d H:i:s");
 
-            if(empty($name) || empty($dept) || empty($staff_id) || empty($email)){
+            if(empty($currency)){
                 //set notification session
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                $url = url('/admin/staffs');
+                $url = url('/dashboard');
                 header("Location: $url");
                 exit();
             }
 
-            $r = DB::select("SELECT * FROM staffs WHERE email='$email' AND id!='staff_id'");
-            if(count($r) > 0){
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Staff with email $email exists.
-                            </div>";
-
-                $url = url('/admin/staffs');
-                header("Location: $url");
-                exit();
-            }
-
-
-            $in_data = ['name'=>$name,
-                    'dept'=>$dept,
-                    'email'=>$email,
-                    'updated_at'=>$date,
-                    'updated_by'=>'1'
+            $in_data = [
+                'value'=>$currency,
+                'updated_at'=>$date,
             ];
 
-            DB::table('staffs')
-                    ->where('id', $staff_id)
+            DB::table('settings')
+                    ->where('name', 'currency')
                     ->update($in_data);
 
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                            SUCESSFULL: Staff Updated.
+                            SUCESSFULL: Settings Updated.
                         </div>";
-            $url = url('/admin/staffs');
+            $url = url('/dashboard');
             header("Location: $url");
             exit();
         }
 
         if(isset($_POST['delete'])){
-            $staff_id = $request->input('staff_id');
+            $c_id = $request->input('c_id');
 
             $date = date("Y-m-d H:i:s");
 
-            if(empty($staff_id)){
+
+            if(empty($c_id)){
                 //set notification session
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Fill the empty fields
-                            </div>";
-                $url = url('/admin/staffs');
+                                <strong>ERROR: </strong> Operation Failed.
+                                </div>";
+                $url = url('/dashboard');
                 header("Location: $url");
                 exit();
             }
 
-            DB::table('staffs')->where('id', '=', $staff_id)->delete();
+            DB::table('rents')->where('id', '=', $c_id)->delete();
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                            SUCESSFULL: Staff Deleted.
+                            SUCESSFULL: Record Deleted.
                         </div>";
-            $url = url('/admin/staffs');
+            $url = url('/dashboard');
             header("Location: $url");
             exit();
+            
         }
 
         $data['page_title'] = "Dashboard";

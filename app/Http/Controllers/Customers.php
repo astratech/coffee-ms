@@ -37,7 +37,7 @@ class Customers extends Controller
             $mobile = $this->site_model->fil_string($request->input('mobile'));
             $email = $this->site_model->fil_string($request->input('email'));
             $address = $this->site_model->fil_string($request->input('address'));
-            $uq_id = $this->site_model->gen_uq_id('SUP');
+            $uq_id = $this->site_model->gen_uq_id('CUS');
 
             $date = date("Y-m-d H:i:s");
 

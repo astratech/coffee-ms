@@ -151,7 +151,7 @@
                                                     <td>{{ $r->model }}</td>
                                                     <td>{{ $r->serial_num }}</td>
                                                     <td>{{ App\Site::get_record("suppliers", $r->supplier_id)->uq_id }}</td>
-                                                    <td>{{ $r->price }}</td>
+                                                    <td>{{ $r->price }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     <td>{{ $r->counter_status }}</td>
                                                     <td>{{ $r->leasing_rate }}</td>
                                                     <td>

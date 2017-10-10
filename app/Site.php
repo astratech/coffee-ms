@@ -86,9 +86,36 @@ class Site extends Model{
         return $output; 
     }
 
+    public static function get_settings($name){
+        $r = DB::select("SELECT * FROM settings WHERE name='$name'");
+        $output = [];
+        if(count($r) > 0){
+            foreach ($r as $value) {
+                $output = $value;
+            }
+        }
+        else{
+             foreach(Schema::getColumnListing("$table") as $d => $value) {
+                $output[$value] = null;
+            }
+        }
+
+        return $output; 
+    }
+
     public static function select_query($query){
     	$r = DB::select($query);
         return $r; 
+    }
+
+    public static function calc_total_sales(){
+        $total = 0;
+        $q = DB::select("SELECT * FROM sales");
+        foreach($q as $d){
+            $total = $d->amount + $total;
+        }
+
+        return $total;
     }
 
     public static function get_material_qty_left($material_id){

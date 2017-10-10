@@ -128,7 +128,7 @@
                                                     <td>{{ $r->uq_id }}</td>
                                                     <td>{{ App\Site::get_record("suppliers", $r->supplier_id)->uq_id }}</td>
                                                     <td>{{ $r->quantity }}  {{ $r->unit }}</td>
-                                                    <td>{{ $r->cost }}</td>
+                                                    <td>{{ $r->cost }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     <td> {!! App\Site::get_material_qty_left($r->id) !!} {{ $r->unit }}</td>
                                                     
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
@@ -143,7 +143,7 @@
                                     </tbody>
                                 </table> 
 
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
