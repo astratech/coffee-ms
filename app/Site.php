@@ -118,16 +118,19 @@ class Site extends Model{
         return $total;
     }
 
-    public static function get_material_qty_left($material_id){
-        $material_qty = Site::get_record("raw_materials", $material_id)->quantity;
+    public static function calc_cost_price($sales_id){
+        $drink_id = Site::get_record("sales", $sales_id)->drink_id;
 
-        $used_quantity = 0;
-        $q = DB::select("SELECT * FROM drink_materials WHERE material_id='$material_id'");
+        $total_cost = 0;
+        $q = DB::select("SELECT * FROM drink_materials WHERE drink_id='$drink_id'");
         foreach($q as $d){
-            $used_quantity = $d->quantity + $used_quantity;
+            $material_cost = Site::get_record("raw_materials", $d->material_id)->cost;
+
+            $self_cost = $d->quantity * $material_cost;
+            $total_cost = $self_cost + $total_cost;
         }
 
-        return ($material_qty - $used_quantity);
+        return $total_cost;
        
     }
 }
