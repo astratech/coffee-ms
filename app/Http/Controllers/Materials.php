@@ -37,7 +37,6 @@ class Materials extends Controller
             $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
             $unit = $this->site_model->fil_string($request->input('unit'));
             $name = $this->site_model->fil_string($request->input('name'));
-            $quantity = $this->site_model->fil_string($request->input('quantity'));
             $cost = $this->site_model->fil_string($request->input('cost'));
 
             $date = date("Y-m-d H:i:s");
@@ -55,7 +54,7 @@ class Materials extends Controller
                 }
             }
 
-            $r = DB::select("SELECT * FROM raw_materials WHERE name='$name' OR uq_id='uq_id'");
+            $r = DB::select("SELECT * FROM raw_materials WHERE uq_id='uq_id'");
             if(count($r) > 0){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
@@ -71,7 +70,6 @@ class Materials extends Controller
                     'supplier_id'=>$supplier_id,
                     'unit'=>$unit,
                     'uq_id'=>$uq_id,
-                    'quantity'=>$quantity,
                     'cost'=>$cost,
                     'created_at'=>$date,
                     'created_by'=>$this->staff_id,
@@ -98,7 +96,6 @@ class Materials extends Controller
             $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
             $unit = $this->site_model->fil_string($request->input('unit'));
             $name = $this->site_model->fil_string($request->input('name'));
-            $quantity = $this->site_model->fil_string($request->input('quantity'));
             $cost = $this->site_model->fil_string($request->input('cost'));
             
             $date = date("Y-m-d H:i:s");
@@ -130,7 +127,6 @@ class Materials extends Controller
                 $in_data = ['name'=>$name,
                     'supplier_id'=>$supplier_id,
                     'unit'=>$unit,
-                    'quantity'=>$quantity,
                     'cost'=>$cost,
                     'updated_by'=>$this->staff_id,
                     'updated_at'=>$date

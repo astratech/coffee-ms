@@ -114,7 +114,7 @@
                                             <th>CUSTOMER</th>
                                             <th>MACHINE</th>
                                             <th>DRINK</th>
-                                            <th>NUM OF PURCHASES</th>
+                                            <th>NUM OF UNIT SOLD</th>
                                             <th>COST PER DRINK</th>
                                             <th>TOTAL AMOUNT</th>
                                             <th>DATE RECORDED</th>
@@ -265,7 +265,7 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Number of Purchase</label>
+                                                <label>Number of Units Sold</label>
                                                 <input type="text" name="num_of_purchase" class="form-control">
                                             </div>
                                         </div>

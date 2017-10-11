@@ -178,37 +178,24 @@ class Drinks extends Controller
                 exit();
             }
 
-            $r = DB::select("SELECT * FROM drink_materials WHERE material_id='$material_id' AND drink_id='$drink_id'");
-            if(count($r) > 0){
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> This Raw Material is already added to this Drink.
-                            </div>";
+            $in_data = ['material_id'=>$material_id,
+                'drink_id'=>$drink_id,
+                'quantity'=>$quantity,
+                'created_at'=>$date,
+                'created_by'=>$this->staff_id,
+                'updated_at'=>$date,
+                'updated_by'=>$this->staff_id,
+                ];
 
-                $url = url('/drinks');
-                header("Location: $url");
-                exit();
-            }
-            else{
-                $in_data = ['material_id'=>$material_id,
-                    'drink_id'=>$drink_id,
-                    'quantity'=>$quantity,
-                    'created_at'=>$date,
-                    'created_by'=>$this->staff_id,
-                    'updated_at'=>$date,
-                    'updated_by'=>$this->staff_id,
-                    ];
+            DB::table('drink_materials')->insert($in_data);
 
-                DB::table('drink_materials')->insert($in_data);
-
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Record Added
-                            </div>";
-                $url = url('/drinks');
-                header("Location: $url");
-                exit();
-            }
+            $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
+                            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                            SUCESSFULL: Record Added
+                        </div>";
+            $url = url('/drinks');
+            header("Location: $url");
+            exit();
         }
 
         if(isset($_POST['delete'])){

@@ -123,7 +123,7 @@
                                         <tr>
                                             <th>NAME</th>
                                             <th>DRINK CODE</th>
-                                            <th>COST</th>
+                                            <th>COST PER UNIT</th>
                                             <th>DATE CREATED</th>
                                             <th>MATERIALS USED</th>
                                             <th>CREATED BY</th>
@@ -144,7 +144,7 @@
                                                     <td>
                                                         @if(count(DB::select("SELECT * FROM drink_materials WHERE drink_id='$r->id'")) > 0)
                                                             @foreach(DB::select("SELECT * FROM drink_materials WHERE drink_id='$r->id'") as $d)
-                                                               <li>{{  App\Site::get_record("raw_materials", $d->material_id)->name }} - {{ $d->quantity }} {{ App\Site::get_record("raw_materials", $d->material_id)->unit }}</li>
+                                                               <li>{{  App\Site::get_record("raw_materials", $d->material_id)->name }} ( {{ $d->quantity }} {{  App\Site::get_record("raw_materials", $d->material_id)->unit }} )</li>
                                                             @endforeach
                                                             
                                                         @else
@@ -195,7 +195,7 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Cost</label>
+                                                <label>Cost Per Unit</label>
                                                 <input type="text" name="cost" class="form-control">
                                             </div>
                                         </div>
@@ -291,7 +291,7 @@
                                                 <label>Raw Material</label>
                                                 <select name="material_id" class="form-control">
                                                     @foreach (App\Site::get_records('raw_materials') as $r)
-                                                        <option value="{{ $r->id }}"> {{ $r->name }} - {{ $r->uq_id }} - {!! App\Site::get_material_qty_left($r->id) !!} {{ $r->unit }} Available</option>
+                                                        <option value="{{ $r->id }}"> {{ $r->name }} - {{ $r->uq_id }} ({{ $r->unit }})</option>
                                                     @endforeach
                                                 </select>
                                             </div>

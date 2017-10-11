@@ -1,4 +1,4 @@
-@import 'https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900';
+/*@import 'https://fonts.googleapis.com/css?family=Rubik:300,400,500,700,900';*/
 @import "spinners.css";
 .preloader {
  width:100%;
@@ -13,7 +13,7 @@
  top:calc(50% - 3.5px);
  left:calc(50% - 3.5px)
 }
-@font-face {
+/*@font-face {
  font-family:Poppins;
  font-style:normal;
  font-weight:400;
@@ -33,7 +33,7 @@
  font-weight:400;
  src:url(https://fonts.gstatic.com/s/poppins/v1/yQWaOD4iNU5NTY0apN-qj_k_vArhqVIZ0nv9q090hN8.woff2) format('woff2');
  unicode-range:U+000000FF,U+0131,U+01520153,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2212,U+2215,U+E0FF,U+EFFD,U+F000
-}
+}*/
 ********** {
  outline:0!important
 }
