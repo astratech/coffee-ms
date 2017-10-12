@@ -54,7 +54,7 @@ class Materials extends Controller
                 }
             }
 
-            $r = DB::select("SELECT * FROM raw_materials WHERE uq_id='uq_id'");
+            $r = DB::select("SELECT * FROM raw_materials WHERE name='$name' OR uq_id='uq_id'");
             if(count($r) > 0){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
