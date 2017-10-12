@@ -34,6 +34,36 @@
                 }
             });
 
+            $(".add-drink").click(function (e) {
+                e.preventDefault();
+                try{
+                    var d = $(this).data('all');
+
+                    $("#itemModal [name='rent_id']").val(d.id);
+                    
+                    
+                    $("#itemModal").modal('show');
+                }
+                catch(err){
+                    alert(err);
+                }
+            });
+
+            $(".remove-drink").click(function (e) {
+                e.preventDefault();
+                try{
+                    var d = $(this).data('all');
+
+                    $("#removeModal [name='c_id']").val(d.id);
+                    
+                    
+                    $("#removeModal").modal('show');
+                }
+                catch(err){
+                    alert(err);
+                }
+            });
+
         });//end ready
     </script> 
 @endsection
@@ -175,6 +205,7 @@
                                             <th>ID</th>
                                             <th>CUSTOMER ID</th>
                                             <th>MACHINE ID</th>
+                                            <th>ASSIGNED DRINKS</th>
                                             <th>DATE CREATED</th>
                                             <th>ACTIONS</th>
                                         </tr>
@@ -190,6 +221,18 @@
                                                         <p>{{ App\Site::get_record("customers", $r->customer_id)->name }}</p>
                                                     </td>
                                                     <td>{{ App\Site::get_record("machines", $r->machine_id)->uq_id }}</td>
+
+                                                    <td>
+                                                        @if(count(DB::select("SELECT * FROM rent_drinks WHERE rent_id='$r->id'")) > 0)
+                                                            @foreach(DB::select("SELECT * FROM rent_drinks WHERE rent_id='$r->id'") as $d)
+                                                               <p>- {{  App\Site::get_record("drinks", $d->drink_id)->name }} <button class="btn btn-info btn-xs remove-drink" data-all="{{ (json_encode($d)) }}">X</button></p>
+                                                            @endforeach
+                                                            
+                                                        @else
+                                                            <p>No Drink</p>
+                                                        @endif
+                                                        <p><button class="btn btn-info btn-xs add-drink" data-all="{{ (json_encode($r)) }}">+ Add Drink</button></p>
+                                                    </td>
                                                     
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
                                                     <td>
@@ -290,6 +333,97 @@
                                         <div class="form-group">
                                             <div class="col-sm-12">
                                                 <input type="submit" name="delete" value="Delete" class="btn btn-success">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="removeModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Delete Drink Record</h4>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <div class="row">
+                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                    <div class="col-md-12">                        
+                                       <p>You are about to delete a record <br><br>Are you sure of this?</p>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="hidden" name="c_id">
+                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="submit" name="delete_drink" value="Delete" class="btn btn-success">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="itemModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Add Drink</h4>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <div class="row">
+                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                    {{ csrf_field() }}
+                                    <div class="col-md-12">  
+                                        
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Drink</label>
+                                                <select name="drink_id" class="form-control">
+                                                    @foreach (App\Site::get_records('drinks') as $r)
+                                                        <option value="{{ $r->id }}">{{ $r->name }} - {{ $r->uq_id }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="hidden" name="rent_id">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="submit" name="add_drink" value="Add Drink" class="btn btn-success">
                                             </div>
                                         </div>
                                     </div>

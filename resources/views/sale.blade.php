@@ -37,6 +37,8 @@
                 }
             });
 
+            
+
         });//end ready
 
     </script> 
@@ -63,19 +65,9 @@
                     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                         <div class="white-box">
                             <div class="col-in row">
-                                <div class="col-md-6 col-sm-6 col-xs-6"> <i data-icon="E" class="linea-icon linea-basic"></i>
-                                    <h5 class="text-muted vb">Total Sales Made</h5> </div>
-                                <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <h3 class="counter text-right m-t-15 text-danger">{{ App\Site::calc_total_sales() }}</h3> 
-                                    <small class="text-right" style="text-transform: uppercase;">{{ App\Site::get_settings("currency")->value }}</small>
-                                </div>
+                                
                                 <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <div class="progress">
-                                    
-                                        
-                                        <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"> 
-                                        </div>
-                                    </div>
+                                    <h4>Sales Report for {{ $rent_uq_id }}</h4>
         
                                 </div>
                             </div>
@@ -98,100 +90,35 @@
 
                         @endif
                         <div class="white-box">
-                                                      
-                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Record</a>
-                            <br>                           
-                            <br> 
 
                             <div class="table-responsive">
-                                <table class="table table-borderedb" id="cs-data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>NAME</th>
-                                            <th>RENT ID</th>
-                                            <th>CUSTOMER</th>
-                                            <th>MACHINE</th>
-                                            <th>DRINK</th>
-                                            <th>NUM OF UNIT SOLD</th>
-                                            <th>COST PER DRINK</th>
-                                            <th>SALE PRICE</th> 
-                                            <th>COST PRICE</th> 
-                                            <th>PROFIT</th> 
-                                            <th>DATE RECORDED</th>
-                                            <th>CREATED BY</th>
-                                            <th>ACTIONS</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        @if(count(App\Site::get_records('sales')) > 0)
-                                           @foreach (App\Site::get_records('sales') as $r)
-                                                <tr>
-                                                    <td>{{ $r->uq_id }}</td>
-                                                    <td>{{ App\Site::get_record("rents",$r->rent_id)->uq_id }}</td>
-                                                    <td>{{ App\Site::get_record("customers", App\Site::get_record("rents", $r->rent_id)->customer_id)->name }}</td>
-                                                    <td>{{ App\Site::get_record("machines", App\Site::get_record("rents", $r->rent_id)->machine_id)->uq_id }}</td>
-                                                    <td>{{ App\Site::get_record("drinks", $r->drink_id)->name }}</td>
-                                                    <td>{{ $r->num_of_purchase }}</td>
-                                                    <td>{{ App\Site::get_record("drinks", $r->drink_id)->cost }} {{ App\Site::get_settings("currency")->value }}</td>
-                                                    <td>{{ $r->amount }} {{ App\Site::get_settings("currency")->value }}</td>
-                                                    
-                                                    <td>{{ App\Site::calc_cost_price($r->id) }} {{ App\Site::get_settings("currency")->value }}</td>
-                                                    @php
-                                                        $pp = $r->amount - App\Site::calc_cost_price($r->id);
-                                                        if($pp <= 0){
-                                                            $pp = 0;
-                                                        }
-                                                    @endphp
-                                                    <td>{{ $pp }} {{ App\Site::get_settings("currency")->value }}</td>
-
-                                                    
-                                                    <td>{{ is_null($r->date_recorded) ? '' : date("Y-m-d", strtotime($r->date_recorded)) }}</td>
-                                                    <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>
-                                                    <td>
-                                                        <a href="{{ url("/report/$r->uq_id") }}">View Report</a>
-                                                        <br>
-                                                        <button class="btn btn-default btn-xs editBtn" data-all="{{ (json_encode($r)) }}">Edit</button>
-                                                        <br>
-                                                        <button class="btn btn-danger btn-xs dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
-                                                    </td>
-                                                </tr>
-                                           @endforeach
-                                        @endif
-                                    </tbody>
-                                </table> 
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.row -->
-
-            </div>
-            <!-- /.container-fluid -->
-
-            <div id="addModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Add Sales Record</h4>
-                        </div>
-                        
-                        <div class="modal-body">
-                            <div class="row">
-                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                <div class="col-md-12">
+                                    <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
                                     {{ csrf_field() }}
                                     <div class="col-md-12">  
+                                        @if(count(DB::select("SELECT * FROM rent_drinks WHERE rent_id='$rent_id'")) > 0)
+                                        @foreach (DB::select("SELECT * FROM rent_drinks WHERE rent_id='$rent_id'") as $r)
+                                            <div class="form-group">
+                                                <div class="col-sm-6">
+                                                    <label>Drink</label>
+                                                    <input type="text" class="form-control" value='{{ App\Site::get_record("drinks", $r->drink_id)->name }}' readonly>
+                                                    <input type="hidden" name="drink_id[]" class="form-control" value='{{ $r->drink_id }}'>
+                                                    <input type="hidden" name="rent_id" class="form-control" value='{{ $rent_id }}'>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <label>Number Sold</label>
+                                                    <input type="number" name="unit[]" class="form-control">
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                        @endif
+
+                                        
+
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Select Rent</label>
-                                                <select name="uq_id" class="form-control">
-                                                    @foreach (App\Site::get_records('rents') as $r)
-                                                        <option value="{{ $r->uq_id }}">{{ $r->uq_id }} - {{ App\Site::get_record('customers', $r->customer_id)->name }}</option>
-                                                    @endforeach
-                                                </select>
+                                                <label>Date Recorded</label>
+                                                <input type="text" name="date_recorded" class="form-control" data-provide="datepicker">
                                             </div>
                                         </div>
 
@@ -202,16 +129,16 @@
                                         </div>
                                     </div>
                                 </form>
+                                </div>
+
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                        
                     </div>
-
                 </div>
+                <!-- /.row -->
+
             </div>
+            <!-- /.container-fluid -->
 
             <div id="addModal" class="modal fade" role="dialog">
                 <div class="modal-dialog">
@@ -280,6 +207,9 @@
 
                 </div>
             </div>
+
+            
+
 
             <div id="editModal" class="modal fade" role="dialog">
                 <div class="modal-dialog">

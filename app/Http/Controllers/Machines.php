@@ -95,41 +95,7 @@ class Machines extends Controller
             }
         }
 
-        if(isset($_POST['add_drink'])){
-            $machine_id = $this->site_model->fil_string($request->input('machine_id'));
-            $drink_id = $this->site_model->fil_string($request->input('drink_id'));
-            
-            $date = date("Y-m-d H:i:s");
-
-            $r = DB::select("SELECT * FROM machine_drinks WHERE machine_id='$machine_id' AND drink_id='$drink_id'");
-            if(count($r) > 0){
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> This Drink is already added to this Machine.
-                            </div>";
-
-                $url = url('/machines');
-                header("Location: $url");
-                exit();
-            }
-            else{
-                $in_data = ['machine_id'=>$machine_id,
-                    'drink_id'=>$drink_id,
-                    'created_at'=>$date,
-                    'created_by'=>$this->staff_id,
-                    ];
-
-                DB::table('machine_drinks')->insert($in_data);
-
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Drink Added to Machine.
-                            </div>";
-                $url = url('/machines');
-                header("Location: $url");
-                exit();
-            }
-        }
+        
 
         
 

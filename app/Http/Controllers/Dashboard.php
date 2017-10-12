@@ -34,6 +34,42 @@ class Dashboard extends Controller{
             exit();
         }
 
+        if(isset($_POST['add_drink'])){
+            $rent_id = $this->site_model->fil_string($request->input('rent_id'));
+            $drink_id = $this->site_model->fil_string($request->input('drink_id'));
+            
+            $date = date("Y-m-d H:i:s");
+
+            $r = DB::select("SELECT * FROM rent_drinks WHERE rent_id='$rent_id' AND drink_id='$drink_id'");
+            if(count($r) > 0){
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                <strong>ERROR: </strong> This Drink is already added to this Rent.
+                            </div>";
+
+                $url = url('/dashboard');
+                header("Location: $url");
+                exit();
+            }
+            else{
+                $in_data = ['rent_id'=>$rent_id,
+                    'drink_id'=>$drink_id,
+                    'created_at'=>$date,
+                    'created_by'=>$this->staff_id,
+                    ];
+
+                DB::table('rent_drinks')->insert($in_data);
+
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                SUCESSFULL: Drink Added to Rent.
+                            </div>";
+                $url = url('/dashboard');
+                header("Location: $url");
+                exit();
+            }
+        }
+
         if(isset($_POST['create'])){
             $uq_id = $this->site_model->gen_uq_id("RNT");
             $customer_id = $this->site_model->fil_string($request->input('customer_id'));
@@ -180,6 +216,35 @@ class Dashboard extends Controller{
             }
 
             DB::table('rents')->where('id', '=', $c_id)->delete();
+
+            $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
+                            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                            SUCESSFULL: Record Deleted.
+                        </div>";
+            $url = url('/dashboard');
+            header("Location: $url");
+            exit();
+            
+        }
+
+        if(isset($_POST['delete_drink'])){
+            $c_id = $request->input('c_id');
+
+            $date = date("Y-m-d H:i:s");
+
+
+            if(empty($c_id)){
+                //set notification session
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                <strong>ERROR: </strong> Operation Failed.
+                                </div>";
+                $url = url('/dashboard');
+                header("Location: $url");
+                exit();
+            }
+
+            DB::table('rent_drinks')->where('id', '=', $c_id)->delete();
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
