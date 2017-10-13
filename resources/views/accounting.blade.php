@@ -111,9 +111,6 @@
                                             <th>RENT ID</th>
                                             <th>CUSTOMER</th>
                                             <th>MACHINE</th>
-                                            <th>DRINK</th>
-                                            <th>NUM OF UNIT SOLD</th>
-                                            <th>COST PER DRINK</th>
                                             <th>SALE PRICE</th> 
                                             <th>COST PRICE</th> 
                                             <th>PROFIT</th> 
@@ -131,25 +128,11 @@
                                                     <td>{{ App\Site::get_record("rents",$r->rent_id)->uq_id }}</td>
                                                     <td>{{ App\Site::get_record("customers", App\Site::get_record("rents", $r->rent_id)->customer_id)->name }}</td>
                                                     <td>{{ App\Site::get_record("machines", App\Site::get_record("rents", $r->rent_id)->machine_id)->uq_id }}</td>
-                                                    <td>{{ App\Site::get_record("drinks", $r->drink_id)->name }}</td>
-                                                    <td>{{ $r->num_of_purchase }}</td>
-                                                    <td>{{ App\Site::get_record("drinks", $r->drink_id)->cost }} {{ App\Site::get_settings("currency")->value }}</td>
-                                                    <td>{{ $r->amount }} {{ App\Site::get_settings("currency")->value }}</td>
-                                                    
-                                                    <td>{{ App\Site::calc_cost_price($r->id) }} {{ App\Site::get_settings("currency")->value }}</td>
-                                                    @php
-                                                        $pp = $r->amount - App\Site::calc_cost_price($r->id);
-                                                        if($pp <= 0){
-                                                            $pp = 0;
-                                                        }
-                                                    @endphp
-                                                    <td>{{ $pp }} {{ App\Site::get_settings("currency")->value }}</td>
 
-                                                    
                                                     <td>{{ is_null($r->date_recorded) ? '' : date("Y-m-d", strtotime($r->date_recorded)) }}</td>
                                                     <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>
                                                     <td>
-                                                        <a href="{{ url("/report/$r->uq_id") }}">View Report</a>
+                                                        <a href="{{ url("/report/$r->uq_id") }}" target="_blank">View Report</a>
                                                         <br>
                                                         <button class="btn btn-default btn-xs editBtn" data-all="{{ (json_encode($r)) }}">Edit</button>
                                                         <br>

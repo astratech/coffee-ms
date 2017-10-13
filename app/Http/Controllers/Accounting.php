@@ -173,14 +173,29 @@ class Accounting extends Controller
             
             $rent_id = $request->input("rent_id");
             $count = count($request->input("unit"));
+            $sale_uq_id = $this->site_model->gen_uq_id("SALES");
 
             $date = date("Y-m-d H:i:s");
             $date_recorded = date("y-m-d", strtotime($request->input('date_recorded')));
 
+            $in_data = ['rent_id'=>$rent_id,
+                'date_recorded'=>$date_recorded,
+                'uq_id'=>$sale_uq_id,
+                'created_at'=>$date,
+                'created_by'=>$this->staff_id,
+                'updated_by'=>$this->staff_id,
+                'updated_at'=>$date
+                ];
+
+            $sales_id = DB::table('sales')->insertGetId($in_data);
+            
+            // echo "$sales_id";
+            // exit();
+
             for($i=0; $i<$count; $i++){
                 $unit = $_POST['unit']["$i"];
                 $drink_id = $_POST['drink_id']["$i"];
-                $sale_uq_id = $this->site_model->gen_uq_id("SALES");
+                
 
                 if(empty($unit) OR empty($drink_id) OR empty($rent_id)) {
 
@@ -197,20 +212,18 @@ class Accounting extends Controller
 
                 $amount = $unit * $cost;
 
-                $in_data = ['rent_id'=>$rent_id,
+                $in_data = ['sales_id'=>$sales_id,
                     'drink_id'=>$drink_id,
-                    'num_of_purchase'=>$unit,
                     'date_recorded'=>$date_recorded,
-                    'uq_id'=>$sale_uq_id,
+                    'num_of_purchase'=>$unit,
                     'amount'=>$amount,
                     'created_at'=>$date,
                     'created_by'=>$this->staff_id,
                     'updated_by'=>$this->staff_id,
                     'updated_at'=>$date
-                    ];
+                ];
 
-                DB::table('sales')->insert($in_data);
-
+                DB::table('sales_entry')->insert($in_data);
             }
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
