@@ -262,6 +262,5 @@ class Dashboard extends Controller{
         echo view('dashboard', $data);
         echo view('footer');
         exit();
-        // exit();
     }
 }

@@ -86,15 +86,11 @@
             <div class="sidebar-nav navbar-collapse slimscrollsidebar">
                 <ul class="nav" id="side-menu">
                     <li style="padding: 10px 0 0;">
-                        <a href="{{ url('/dashboard') }}" class="waves-effect"><span class="hide-menu">Dashboard</span></a>
-                    </li>
-
-                    <li style="padding: 10px 0 0;">
-                        <a href="{{ url('/accounting') }}" class="waves-effect"><span class="hide-menu">Accounting</span></a>
-                    </li>
-
-                    <li style="padding: 10px 0 0;">
                         <a href="{{ url('/units') }}" class="waves-effect"><span class="hide-menu">Units</span></a>
+                    </li>
+
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/dashboard') }}" class="waves-effect"><span class="hide-menu">Dashboard</span></a>
                     </li>
 
                     <li style="padding: 10px 0 0;">
@@ -102,7 +98,15 @@
                     </li>
 
                     <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/customers') }}" class="waves-effect"><span class="hide-menu">Customers</span></a>
+                    </li>
+
+                    <li style="padding: 10px 0 0;">
                         <a href="{{ url('/materials') }}" class="waves-effect"><span class="hide-menu">Products</span></a>
+                    </li>
+
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/machines') }}" class="waves-effect"><span class="hide-menu">Machines</span></a>
                     </li>
 
                     <li style="padding: 10px 0 0;">
@@ -110,14 +114,8 @@
                     </li>
 
                     <li style="padding: 10px 0 0;">
-                        <a href="{{ url('/customers') }}" class="waves-effect"><span class="hide-menu">Customers</span></a>
+                        <a href="{{ url('/accounting') }}" class="waves-effect"><span class="hide-menu">Accounting</span></a>
                     </li>
-
-                    <li style="padding: 10px 0 0;">
-                        <a href="{{ url('/machines') }}" class="waves-effect"><span class="hide-menu">Machines</span></a>
-                    </li>
-
-
 
                 </ul>
             </div>
