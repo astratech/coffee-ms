@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Site;
 use DB;	
 
-class Materials extends Controller
+class Products extends Controller
 {
     public function __construct() {
         $this->site_model = new Site;
@@ -48,20 +48,20 @@ class Materials extends Controller
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                    $url = url('/materials');
+                    $url = url('/products');
                     header("Location: $url");
                     exit();
                 }
             }
 
-            $r = DB::select("SELECT * FROM raw_materials WHERE name='$name' OR uq_id='uq_id'");
+            $r = DB::select("SELECT * FROM products WHERE name='$name' OR uq_id='uq_id'");
             if(count($r) > 0){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Raw Material already Exist.
                             </div>";
 
-                $url = url('/materials');
+                $url = url('/products');
                 header("Location: $url");
                 exit();
             }
@@ -77,13 +77,13 @@ class Materials extends Controller
                     'updated_at'=>$date
                     ];
 
-                DB::table('raw_materials')->insert($in_data);
+                DB::table('products')->insert($in_data);
 
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 SUCESSFULL: Record Added
                             </div>";
-                $url = url('/materials');
+                $url = url('/products');
                 header("Location: $url");
                 exit();
             }
@@ -107,19 +107,19 @@ class Materials extends Controller
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                    $url = url('/materials');
+                    $url = url('/products');
                     header("Location: $url");
                     exit();
                 }
             }
 
-            $r = DB::select("SELECT * FROM raw_materials WHERE name='$name' AND id!='$c_id'");
+            $r = DB::select("SELECT * FROM products WHERE name='$name' AND id!='$c_id'");
             if(count($r) > 0){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 ERROR: $name is assigned.
                             </div>";
-                $url = url('/materials');
+                $url = url('/products');
                 header("Location: $url");
                 exit();   
             }
@@ -132,7 +132,7 @@ class Materials extends Controller
                     'updated_at'=>$date
                 ];
 
-                DB::table('raw_materials')
+                DB::table('products')
                         ->where('id', $c_id)
                         ->update($in_data);
 
@@ -141,7 +141,7 @@ class Materials extends Controller
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 SUCESSFULL: Record Updated.
                             </div>";
-                $url = url('/materials');
+                $url = url('/products');
                 header("Location: $url");
                 exit();    
             }
@@ -167,19 +167,19 @@ class Materials extends Controller
                 exit();
             }
 
-            DB::table('raw_materials')->where('id', '=', $c_id)->delete();
+            DB::table('products')->where('id', '=', $c_id)->delete();
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                             SUCESSFULL: Record Deleted.
                         </div>";
-            $url = url('/materials');
+            $url = url('/products');
             header("Location: $url");
             exit();
             
         }
 
-        $data['page_title'] = "Materials";
+        $data['page_title'] = "Products";
         
         echo view('materials', $data);
         echo view('footer');

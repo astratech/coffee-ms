@@ -123,7 +123,6 @@
                                         <tr>
                                             <th>NAME</th>
                                             <th>DRINK CODE</th>
-                                            <th>COST PER UNIT</th>
                                             <th>DATE CREATED</th>
                                             <th>MATERIALS USED</th>
                                             <th>CREATED BY</th>
@@ -137,20 +136,19 @@
                                                 <tr>
                                                     <td>{{ $r->name }}</td>
                                                     <td>{{ $r->uq_id }}</td>
-                                                    <td>{{ $r->cost }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
 
                                                     <td>
-                                                        @if(count(DB::select("SELECT * FROM drink_materials WHERE drink_id='$r->id'")) > 0)
-                                                            @foreach(DB::select("SELECT * FROM drink_materials WHERE drink_id='$r->id'") as $d)
-                                                               <li>{{  App\Site::get_record("raw_materials", $d->material_id)->name }} ( {{ $d->quantity }} {{  App\Site::get_record("raw_materials", $d->material_id)->unit }} )</li>
+                                                        @if(count(DB::select("SELECT * FROM drink_products WHERE drink_id='$r->id'")) > 0)
+                                                            @foreach(DB::select("SELECT * FROM drink_products WHERE drink_id='$r->id'") as $d)
+                                                               <li>{{  App\Site::get_record("products", $d->product_id)->name }} ( {{ $d->quantity }} {{  App\Site::get_record("products", $d->product_id)->unit }} )</li>
                                                             @endforeach
                                                             
                                                         @else
-                                                            <p>No Material Added</p>
+                                                            <p>No Product Added</p>
                                                         @endif
-                                                        <p><button class="btn btn-info btn-xs add-mat" data-all="{{ (json_encode($r)) }}">+ Add Material</button></p>
+                                                        <p><button class="btn btn-info btn-xs add-mat" data-all="{{ (json_encode($r)) }}">+ Add Product</button></p>
                                                     </td>
                                                     <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>
                                                     <td>
@@ -195,13 +193,6 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Cost Per Unit</label>
-                                                <input type="text" name="cost" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
                                                 <input type="submit" name="create" value="Submit" class="btn btn-success">
                                             </div>
                                         </div>
@@ -240,13 +231,6 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Cost</label>
-                                                <input type="text" name="cost" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
                                                 <input type="hidden" name="c_id">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                             </div>
@@ -276,7 +260,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Add Raw Material</h4>
+                            <h4 class="modal-title">Add Product</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -289,8 +273,8 @@
                                         <div class="form-group">
                                             <div class="col-sm-12">
                                                 <label>Raw Material</label>
-                                                <select name="material_id" class="form-control">
-                                                    @foreach (App\Site::get_records('raw_materials') as $r)
+                                                <select name="product_id" class="form-control">
+                                                    @foreach (App\Site::get_records('products') as $r)
                                                         <option value="{{ $r->id }}"> {{ $r->name }} - {{ $r->uq_id }} ({{ $r->unit }})</option>
                                                     @endforeach
                                                 </select>

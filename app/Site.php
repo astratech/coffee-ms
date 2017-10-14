@@ -133,4 +133,21 @@ class Site extends Model{
         return $total_cost;
        
     }
+
+    public static function get_rent_drink_via_rd($rent_id, $drink_id){
+        $r = DB::select("SELECT * FROM rent_drinks WHERE rent_id='$rent_id' AND drink_id='$drink_id'");
+        $output = [];
+        if(count($r) > 0){
+            foreach ($r as $value) {
+                $output = $value;
+            }
+        }
+        else{
+             foreach(Schema::getColumnListing("rent_drinks") as $d => $value) {
+                $output[$value] = null;
+            }
+        }
+
+        return $output; 
+    }
 }

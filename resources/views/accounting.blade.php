@@ -111,9 +111,6 @@
                                             <th>RENT ID</th>
                                             <th>CUSTOMER</th>
                                             <th>MACHINE</th>
-                                            <th>SALE PRICE</th> 
-                                            <th>COST PRICE</th> 
-                                            <th>PROFIT</th> 
                                             <th>DATE RECORDED</th>
                                             <th>CREATED BY</th>
                                             <th>ACTIONS</th>
@@ -133,8 +130,6 @@
                                                     <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>
                                                     <td>
                                                         <a href="{{ url("/report/$r->uq_id") }}" target="_blank">View Report</a>
-                                                        <br>
-                                                        <button class="btn btn-default btn-xs editBtn" data-all="{{ (json_encode($r)) }}">Edit</button>
                                                         <br>
                                                         <button class="btn btn-danger btn-xs dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
                                                     </td>

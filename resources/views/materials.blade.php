@@ -66,9 +66,9 @@
                         <div class="white-box">
                             <div class="col-in row">
                                 <div class="col-md-6 col-sm-6 col-xs-6"> <i data-icon="E" class="linea-icon linea-basic"></i>
-                                    <h5 class="text-muted vb">Total Number of Materials</h5> </div>
+                                    <h5 class="text-muted vb">Total Number of Products</h5> </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <h3 class="counter text-right m-t-15 text-danger">{{ count(App\Site::get_records('raw_materials')) }}</h3> </div>
+                                    <h3 class="counter text-right m-t-15 text-danger">{{ count(App\Site::get_records('products')) }}</h3> </div>
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <div class="progress">
                                     
@@ -99,7 +99,7 @@
                         @endif
                         <div class="white-box">
                                                       
-                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Material</a>
+                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Product</a>
                             <br>                           
                             <br> 
 
@@ -108,7 +108,7 @@
                                     <thead>
                                         <tr>
                                             <th>NAME</th>
-                                            <th>MATERIAL CODE</th>
+                                            <th>Product CODE</th>
                                             <th>SUPPLIER</th>
                                             <th>QUANTITY</th>
                                             <th>COST PER QUANTITY</th>
@@ -119,8 +119,8 @@
                                     </thead>
                                     <tbody>
 
-                                        @if(count(App\Site::get_records('raw_materials')) > 0)
-                                           @foreach (App\Site::get_records('raw_materials') as $r)
+                                        @if(count(App\Site::get_records('products')) > 0)
+                                           @foreach (App\Site::get_records('products') as $r)
                                                 <tr>
                                                     <td>{{ $r->name }}</td>
                                                     <td>{{ $r->uq_id }}</td>
@@ -155,12 +155,12 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Add Raw Material</h4>
+                            <h4 class="modal-title">Add Raw Product</h4>
                         </div>
                         
                         <div class="modal-body">
                             <div class="row">
-                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                <form class="form-horizontal form-Product" method="POST" action="{{ url()->current() }}">
                                     {{ csrf_field() }}
                                     <div class="col-md-12">  
                                         <div class="form-group">
@@ -172,7 +172,7 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Quantity</label>
+                                                <label>Quantity Unit</label>
                                                 <select name="unit" class="form-control">
                                                     @foreach (App\Site::get_records('units') as $r)
                                                         <option value="{{ $r->name }}">{{ $r->name }}</option>
@@ -226,12 +226,12 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Edit Material</h4>
+                            <h4 class="modal-title">Edit Product</h4>
                         </div>
                         
                         <div class="modal-body">
                             <div class="row">
-                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                <form class="form-horizontal form-Product" method="POST" action="{{ url()->current() }}">
                                     <div class="col-md-12">                        
                                         <div class="form-group">
                                             <div class="col-sm-12">
@@ -305,7 +305,7 @@
                         
                         <div class="modal-body">
                             <div class="row">
-                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                <form class="form-horizontal form-Product" method="POST" action="{{ url()->current() }}">
                                     <div class="col-md-12">                        
                                        <p>You are about to delete a record <br><br>Are you sure of this?</p>
 

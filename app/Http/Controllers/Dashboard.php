@@ -37,8 +37,20 @@ class Dashboard extends Controller{
         if(isset($_POST['add_drink'])){
             $rent_id = $this->site_model->fil_string($request->input('rent_id'));
             $drink_id = $this->site_model->fil_string($request->input('drink_id'));
+            $cost = $this->site_model->fil_num($request->input('cost'));
             
             $date = date("Y-m-d H:i:s");
+
+            if(empty($cost)){
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                <strong>ERROR: </strong> Enter Cost of Drink.
+                            </div>";
+
+                $url = url('/dashboard');
+                header("Location: $url");
+                exit();
+            }
 
             $r = DB::select("SELECT * FROM rent_drinks WHERE rent_id='$rent_id' AND drink_id='$drink_id'");
             if(count($r) > 0){
@@ -54,6 +66,7 @@ class Dashboard extends Controller{
             else{
                 $in_data = ['rent_id'=>$rent_id,
                     'drink_id'=>$drink_id,
+                    'cost'=>$cost,
                     'created_at'=>$date,
                     'created_by'=>$this->staff_id,
                     ];

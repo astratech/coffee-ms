@@ -155,16 +155,10 @@
                 <!-- /.row -->
 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="white-box">
                             <div class="col-in row">
-                                @if(isset($_SESSION['notification']))
-
-                                    {!! $_SESSION['notification'] !!}
-
-                                    @php unset($_SESSION['notification']) @endphp
-
-                                @endif
+                                
                                 <h5>System Settings</h5>
                                 <br>
                                 <br>
@@ -190,13 +184,20 @@
                         </div>
                     </div>
 
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                         <div class="white-box">
                             <div class="col-in row">
                                 <h4>Rents</h4>
                                 <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Record</a>
                             <br>                           
                             <br> 
+                            @if(isset($_SESSION['notification']))
+
+                                {!! $_SESSION['notification'] !!}
+
+                                @php unset($_SESSION['notification']) @endphp
+
+                            @endif
 
                             <div class="table-responsive">
                                 <table class="table table-borderedb" id="cs-data-table">
@@ -220,12 +221,12 @@
                                                         <p>{{ App\Site::get_record("customers", $r->customer_id)->uq_id }}</p>
                                                         <p>{{ App\Site::get_record("customers", $r->customer_id)->name }}</p>
                                                     </td>
-                                                    <td>{{ App\Site::get_record("machines", $r->machine_id)->uq_id }}</td>
+                                                    <td>{{ App\Site::get_record("machines", $r->machine_id)->uq_id }} <br> {{ App\Site::get_record("machines", $r->machine_id)->model }} </td>
 
                                                     <td>
                                                         @if(count(DB::select("SELECT * FROM rent_drinks WHERE rent_id='$r->id'")) > 0)
                                                             @foreach(DB::select("SELECT * FROM rent_drinks WHERE rent_id='$r->id'") as $d)
-                                                               <p>- {{  App\Site::get_record("drinks", $d->drink_id)->name }} <button class="btn btn-info btn-xs remove-drink" data-all="{{ (json_encode($d)) }}">X</button></p>
+                                                               <p>- {{  App\Site::get_record("drinks", $d->drink_id)->name }} [{{ $d->cost }} {{ App\Site::get_settings("currency")->value }}]  <button class="btn btn-info btn-xs remove-drink" data-all="{{ (json_encode($d)) }}">X</button></p>
                                                             @endforeach
                                                             
                                                         @else
@@ -284,7 +285,7 @@
                                                 <label>Machine</label>
                                                 <select name="machine_id" class="form-control">
                                                     @foreach (App\Site::get_records('machines') as $r)
-                                                        <option value="{{ $r->id }}">  {{ $r->uq_id }}</option>
+                                                        <option value="{{ $r->id }}">  {{ $r->uq_id }} - {{ $r->model }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -412,6 +413,13 @@
                                                         <option value="{{ $r->id }}">{{ $r->name }} - {{ $r->uq_id }}</option>
                                                     @endforeach
                                                 </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Cost Per Drink</label>
+                                                <input type="number" name="cost" class="form-control">
                                             </div>
                                         </div>
 

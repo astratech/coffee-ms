@@ -40,6 +40,7 @@ class Report extends Controller
         if(count($r) > 0){
             foreach ($r as $d){
                 $data['sales_id'] = $d->id;
+                $data['rent_id'] = $d->rent_id;
                 $data['sales_uq_id'] = $d->uq_id;
             }
         }

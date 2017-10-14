@@ -178,6 +178,8 @@ class Accounting extends Controller
             $date = date("Y-m-d H:i:s");
             $date_recorded = date("y-m-d", strtotime($request->input('date_recorded')));
 
+            DB::beginTransaction();
+
             $in_data = ['rent_id'=>$rent_id,
                 'date_recorded'=>$date_recorded,
                 'uq_id'=>$sale_uq_id,
@@ -198,6 +200,7 @@ class Accounting extends Controller
                 
 
                 if(empty($unit) OR empty($drink_id) OR empty($rent_id)) {
+                    DB::rollBack();
 
                     $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
@@ -208,7 +211,11 @@ class Accounting extends Controller
                     exit();
                 }
 
-                $cost = $this->site_model->get_record("drinks", $drink_id)->cost;
+                
+                $qq = DB::select("SELECT * FROM rent_drinks WHERE drink_id='$drink_id' ORDER BY id DESC");
+                foreach ($qq as $qi){
+                    $cost = $qi->cost;
+                }
 
                 $amount = $unit * $cost;
 
@@ -225,6 +232,8 @@ class Accounting extends Controller
 
                 DB::table('sales_entry')->insert($in_data);
             }
+
+            DB::commit();
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>

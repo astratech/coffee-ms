@@ -97,38 +97,67 @@
                                         <table class="table table-bordered">
                                             <thead>
                                                 <th>Drink Name</th>
-                                                <th>Materials Used</th>
+                                                <th>Products Used</th>
                                                 <th>Drink Price</th>
                                                 <th>Units Sold</th>
-                                                <th>Sales Prices</th>
+                                                <th>Sales Price</th>
+                                                <th>Cost Price</th>
+                                                <th>Profit</th>
                                             </thead>
                                             <tbody>
+                                                @php
+                                                    $total_unit = 0;
+                                                    $total_cost_price = 0;
+                                                    $total_sales_price = 0;
+                                                    $total_profit = 0;
+
+                                                @endphp
+
                                                 @if(count(DB::select("SELECT * FROM sales_entry WHERE sales_id='$sales_id'")) > 0)
                                                     @foreach(DB::select("SELECT * FROM sales_entry WHERE sales_id='$sales_id'") as $r)
                                                         <tr>
                                                             <td>{{ App\Site::get_record("drinks", $r->drink_id)->name }}</td>
                                                             <td>
                                                                 @php $t_m_cost = 0; @endphp
-                                                                @foreach(DB::select("SELECT * FROM drink_materials WHERE drink_id='$r->drink_id'") as $i)
+                                                                @foreach(DB::select("SELECT * FROM drink_products WHERE drink_id='$r->drink_id'") as $i)
                                                                     @php
 
-                                                                        $m_cost = $i->quantity * App\Site::get_record("raw_materials", $i->material_id)->cost;
+                                                                        $m_cost = $i->quantity * App\Site::get_record("products", $i->product_id)->cost;
                                                                         $t_m_cost = $t_m_cost + $m_cost;
+                                                                        $single_cost = $t_m_cost * $r->num_of_purchase;
                                                                     @endphp
-                                                                    <p>- {{ App\Site::get_record("raw_materials", $i->material_id)->name }} - ( {{ $i->quantity }} * {{ App\Site::get_record("raw_materials", $i->material_id)->cost }} {{ App\Site::get_settings("currency")->value }} = {{ $m_cost }} {{ App\Site::get_settings("currency")->value }})</p>
+                                                                    <p>- {{ App\Site::get_record("products", $i->product_id)->name }} - ( {{ $i->quantity }} {{ App\Site::get_record("products", $i->product_id)->unit }} * {{ App\Site::get_record("products", $i->product_id)->cost }} {{ App\Site::get_settings("currency")->value }} = {{ $m_cost }} {{ App\Site::get_settings("currency")->value }})</p>
                                                                 @endforeach
-                                                                <p>Total Cost Price = {{ $t_m_cost }} {{ App\Site::get_settings("currency")->value }}</p>
+                                                                <p>Drink Cost Price = {{ $t_m_cost }} {{ App\Site::get_settings("currency")->value }}</p>
                                                             </td>
-                                                            <td>{{ App\Site::get_record("drinks", $r->drink_id)->cost }} {{ App\Site::get_settings("currency")->value }}</td>
+
+                                                            {{-- GET RENT DRINK COST --}}
+                                                            <td>{{ App\Site::get_rent_drink_via_rd($rent_id, $r->drink_id)->cost }} {{ App\Site::get_settings("currency")->value }}</td>
                                                             <td>{{ $r->num_of_purchase }}</td>
                                                             <td>{{ $r->amount }} {{ App\Site::get_settings("currency")->value }}</td>
+                                                            <td>{{ $single_cost }} {{ App\Site::get_settings("currency")->value }}</td>
+                                                            @php $profit = $r->amount - $single_cost; @endphp
+                                                            <td>{{ $profit }} {{ App\Site::get_settings("currency")->value }}</td>
+
+                                                            {{-- calculate all --}}
+                                                            @php
+                                                                $total_unit = $r->num_of_purchase + $total_unit;
+                                                                $total_cost_price = $single_cost + $total_cost_price;
+                                                                $total_sales_price = $r->amount + $total_sales_price;
+                                                                $total_profit = $profit + $total_profit;
+                                                            @endphp
                                                         </tr>
                                                     @endforeach
                                                 @endif
                                             </tbody>
                                         </table>
                                     
-                                    
+                                        <div>
+                                            <p>TOTAL UNITS SOLD: {{ $total_unit }}</p>
+                                            <p>TOTAL COST PRICE: {{ $total_cost_price }} {{ App\Site::get_settings("currency")->value }}</p>
+                                            <p>TOTAL SALES PRICE: {{ $total_sales_price }} {{ App\Site::get_settings("currency")->value }}</p>
+                                            <p>TOTAL PROFIT MADE: {{ $total_profit }} {{ App\Site::get_settings("currency")->value }}</p>
+                                        </div>
                                 </div>
 
                             </div>

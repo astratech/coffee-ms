@@ -35,7 +35,6 @@ class Drinks extends Controller
         if(isset($_POST['create'])){
             $uq_id = $this->site_model->gen_uq_id("DRK");
             $name = $this->site_model->fil_string($request->input('name'));
-            $cost = $this->site_model->fil_string($request->input('cost'));
 
             $date = date("Y-m-d H:i:s");
 
@@ -65,7 +64,6 @@ class Drinks extends Controller
             }
             else{
                 $in_data = ['name'=>$name,
-                    'cost'=>$cost,
                     'uq_id'=>$uq_id,
                     'created_at'=>$date,
                     'created_by'=>$this->staff_id,
@@ -88,7 +86,6 @@ class Drinks extends Controller
         if(isset($_POST['update'])){
             $c_id = $this->site_model->fil_string($request->input('c_id'));
             $name = $this->site_model->fil_string($request->input('name'));
-            $cost = $this->site_model->fil_string($request->input('cost'));
             
             $date = date("Y-m-d H:i:s");
 
@@ -117,7 +114,6 @@ class Drinks extends Controller
             }
             else{
                 $in_data = ['name'=>$name,
-                    'cost'=>$cost,
                     'updated_by'=>$this->staff_id,
                     'updated_at'=>$date
                 ];
@@ -139,13 +135,13 @@ class Drinks extends Controller
         }
 
         if(isset($_POST['add_material'])){
-            $material_id = $this->site_model->fil_num($request->input('material_id'));
+            $product_id = $this->site_model->fil_num($request->input('product_id'));
             $drink_id = $this->site_model->fil_num($request->input('drink_id'));
             $quantity = $this->site_model->fil_num($request->input('quantity'));
             
             $date = date("Y-m-d H:i:s");
 
-            if(empty($material_id) OR empty($drink_id)){
+            if(empty($product_id) OR empty($drink_id)){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Operation Failed.
@@ -178,7 +174,7 @@ class Drinks extends Controller
                 exit();
             }
 
-            $in_data = ['material_id'=>$material_id,
+            $in_data = ['product_id'=>$product_id,
                 'drink_id'=>$drink_id,
                 'quantity'=>$quantity,
                 'created_at'=>$date,
@@ -187,7 +183,7 @@ class Drinks extends Controller
                 'updated_by'=>$this->staff_id,
                 ];
 
-            DB::table('drink_materials')->insert($in_data);
+            DB::table('drink_products')->insert($in_data);
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
