@@ -81,6 +81,9 @@ class Site extends Model{
              foreach(Schema::getColumnListing("$table") as $d => $value) {
                 $output[$value] = null;
             }
+
+            $output = json_encode($output);
+            $output = json_decode($output);
         }
 
         return $output; 

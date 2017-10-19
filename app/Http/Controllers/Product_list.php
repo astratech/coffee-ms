@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Site;
+use Schema;
 use DB;	
 
 class Product_list extends Controller
