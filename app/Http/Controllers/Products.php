@@ -35,7 +35,7 @@ class Products extends Controller
         if(isset($_POST['create'])){
             $uq_id = $this->site_model->gen_uq_id("MTR");
             $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
-            $unit = $this->site_model->fil_string($request->input('unit'));
+            
             $product_list_id = $this->site_model->fil_num($request->input('product_list_id'));
             $cost = $this->site_model->fil_num($request->input('cost'));
             $price_per_qty = $this->site_model->fil_num( $request->input('price_per_qty'));
@@ -70,7 +70,6 @@ class Products extends Controller
             else{
                 $in_data = ['product_list_id'=>$product_list_id,
                     'supplier_id'=>$supplier_id,
-                    'unit'=>$unit,
                     'uq_id'=>$uq_id,
                     'cost'=>$cost,
                     'price_per_qty'=>$price_per_qty,
@@ -98,7 +97,6 @@ class Products extends Controller
         if(isset($_POST['update'])){
             $c_id = $this->site_model->fil_string($request->input('c_id'));
             $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
-            $unit = $this->site_model->fil_string($request->input('unit'));
             $product_list_id = $this->site_model->fil_num($request->input('product_list_id'));
             $cost = $this->site_model->fil_num($request->input('cost'));
             $price_per_qty = $this->site_model->fil_num( $request->input('price_per_qty'));
@@ -121,8 +119,6 @@ class Products extends Controller
 
             $in_data = ['product_list_id'=>$product_list_id,
                 'supplier_id'=>$supplier_id,
-                'unit'=>$unit,
-                'uq_id'=>$uq_id,
                 'cost'=>$cost,
                 'price_per_qty'=>$price_per_qty,
                 'quantity'=>$quantity,

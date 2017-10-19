@@ -51,6 +51,20 @@
                 }
             });
 
+            $(".remove-material").click(function (e) {
+                e.preventDefault();
+                try{
+                    var d = $(this).data('all');
+
+                    $("#removeModal [name='c_id']").val(d.id);
+                    
+                    
+                    $("#removeModal").modal('show');
+                }
+                catch(err){
+                    alert(err);
+                }
+            });
             
 
         });//end ready
@@ -124,7 +138,7 @@
                                             <th>NAME</th>
                                             <th>DRINK CODE</th>
                                             <th>DATE CREATED</th>
-                                            <th>MATERIALS USED</th>
+                                            <th>MATERIALS TO BE USED</th>
                                             <th>CREATED BY</th>
                                             <th>ACTIONS</th>
                                         </tr>
@@ -142,7 +156,7 @@
                                                     <td>
                                                         @if(count(DB::select("SELECT * FROM drink_products WHERE drink_id='$r->id'")) > 0)
                                                             @foreach(DB::select("SELECT * FROM drink_products WHERE drink_id='$r->id'") as $d)
-                                                               <li>{{  App\Site::get_record("products", $d->product_id)->name }} ( {{ $d->quantity }} {{  App\Site::get_record("products", $d->product_id)->unit }} )</li>
+                                                               <li style="width: 100%;">{{  App\Site::get_record("product_list", $d->product_list_id)->name }} ( {{ $d->quantity }} {{  App\Site::get_record("product_list", $d->product_list_id)->unit }} ) <button class="btn btn-danger btn-xs remove-material" data-all="{{ (json_encode($d)) }}">x</button></li>
                                                             @endforeach
                                                             
                                                         @else
@@ -273,9 +287,9 @@
                                         <div class="form-group">
                                             <div class="col-sm-12">
                                                 <label>Raw Material</label>
-                                                <select name="product_id" class="form-control">
-                                                    @foreach (App\Site::get_records('products') as $r)
-                                                        <option value="{{ $r->id }}"> {{ $r->name }} - {{ $r->uq_id }} ({{ $r->unit }})</option>
+                                                <select name="product_list_id" class="form-control">
+                                                    @foreach (App\Site::get_records('product_list') as $r)
+                                                        <option value="{{ $r->id }}"> {{ $r->name }} -  ({{ $r->unit }})</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -337,6 +351,46 @@
                                         <div class="form-group">
                                             <div class="col-sm-12">
                                                 <input type="submit" name="delete" value="Delete" class="btn btn-success">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="removeModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Delete Material Record</h4>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <div class="row">
+                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                    <div class="col-md-12">                        
+                                       <p>You are about to delete a record <br><br>Are you sure of this?</p>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="hidden" name="c_id">
+                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="submit" name="delete_material" value="Delete" class="btn btn-success">
                                             </div>
                                         </div>
                                     </div>

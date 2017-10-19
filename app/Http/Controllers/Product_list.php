@@ -34,7 +34,8 @@ class Product_list extends Controller
 
         if(isset($_POST['create'])){
 
-            $name = $this->site_model->fil_string($request->input('name'));
+            $name = $this->site_model->fil_string($request->input('name')); 
+            $unit = $this->site_model->fil_string($request->input('unit')); 
 
             $date = date("Y-m-d H:i:s");
 
@@ -64,6 +65,7 @@ class Product_list extends Controller
             }
             else{
                 $in_data = ['name'=>$name,
+                    'unit'=>$unit,
                     'created_at'=>$date,
                     'created_by'=>$this->staff_id,
                     'updated_by'=>$this->staff_id,
@@ -85,13 +87,14 @@ class Product_list extends Controller
         
 
         if(isset($_POST['update'])){
-            $c_id = $this->site_model->fil_string($request->input('c_id'));
+            $c_id = $this->site_model->fil_num($request->input('c_id'));
             $name = $this->site_model->fil_string($request->input('name'));
+            $unit = $this->site_model->fil_string($request->input('unit'));
             
             $date = date("Y-m-d H:i:s");
 
             foreach ($_POST as $key => $val) {
-                if (empty($val)) {
+                if (empty($val) OR empty($c_id)) {
 
                     $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
@@ -115,6 +118,7 @@ class Product_list extends Controller
             }
             else{
                 $in_data = ['name'=>$name,
+                    'unit'=>$unit,
                     'updated_by'=>$this->staff_id,
                     'updated_at'=>$date
                 ];

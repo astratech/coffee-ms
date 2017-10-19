@@ -130,8 +130,8 @@
                                                     <td>{{ App\Site::get_record("product_list", $r->product_list_id)->name }}</td>
                                                     <td>{{ App\Site::get_record("suppliers", $r->supplier_id)->uq_id }} - {{ App\Site::get_record("suppliers", $r->supplier_id)->name }}</td>
                                                     
-                                                    <td> {{ $r->quantity }} {{ $r->unit }}</td>
-                                                    <td> {{ $r->quantity }} {{ $r->unit }}</td>
+                                                    <td> {{ $r->quantity }} {{ App\Site::get_record("product_list", $r->product_list_id)->unit }}</td>
+                                                    <td> {{ $r->quantity }} {{ App\Site::get_record("product_list", $r->product_list_id)->unit }}</td>
                                                     <td>{{ $r->price_per_qty }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     <td>{{ $r->cost }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     
@@ -175,7 +175,7 @@
                                                 <label>Select Product</label>
                                                 <select name="product_list_id" class="form-control">
                                                     @foreach (App\Site::get_records('product_list') as $r)
-                                                        <option value="{{ $r->id }}">{{ $r->name }}</option>
+                                                        <option value="{{ $r->id }}">{{ $r->name }} - {{ $r->unit }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -185,17 +185,6 @@
                                             <div class="col-sm-12">
                                                 <label>Quantity </label>
                                                 <input type="text" name="quantity" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Unit</label>
-                                                <select name="unit" class="form-control">
-                                                    @foreach (App\Site::get_records('units') as $r)
-                                                        <option value="{{ $r->name }}">{{ $r->name }}</option>
-                                                    @endforeach
-                                                </select>
                                             </div>
                                         </div>
 
@@ -263,7 +252,7 @@
                                                 <label>Select Product</label>
                                                 <select name="product_list_id" class="form-control">
                                                     @foreach (App\Site::get_records('product_list') as $r)
-                                                        <option value="{{ $r->id }}">{{ $r->name }}</option>
+                                                        <option value="{{ $r->id }}">{{ $r->name }} - {{ $r->unit }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -273,17 +262,6 @@
                                             <div class="col-sm-12">
                                                 <label>Quantity </label>
                                                 <input type="text" name="quantity" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Unit</label>
-                                                <select name="unit" class="form-control">
-                                                    @foreach (App\Site::get_records('units') as $r)
-                                                        <option value="{{ $r->name }}">{{ $r->name }}</option>
-                                                    @endforeach
-                                                </select>
                                             </div>
                                         </div>
 

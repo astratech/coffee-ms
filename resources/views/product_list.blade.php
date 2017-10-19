@@ -12,9 +12,7 @@
 
                     $("#editModal [name='c_id']").val(d.id);
                     $("#editModal [name='name']").val(d.name);
-                    $("#editModal [name='supplier_id']").val(d.supplier_id);
                     $("#editModal [name='unit']").val(d.unit);
-                    $("#editModal [name='cost']").val(d.cost);
                     
                     $("#editModal").modal('show');
                 }
@@ -82,6 +80,7 @@
                                     <thead>
                                         <tr>
                                             <th>NAME</th>
+                                            <th>UNIT</th>
                                             <th>DATE CREATED</th>
                                             <th>CREATED BY</th>
                                             <th>ACTIONS</th>
@@ -93,6 +92,7 @@
                                            @foreach (App\Site::get_records('product_list') as $r)
                                                 <tr>
                                                     <td>{{ $r->name }}</td>
+                                                    <td>{{ $r->unit }}</td>
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
                                                     <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>
                                                     <td>
@@ -137,6 +137,17 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
+                                                <label>Unit</label>
+                                                <select name="unit" class="form-control">
+                                                    @foreach (App\Site::get_records('units') as $r)
+                                                        <option value="{{ $r->name }}">{{ $r->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
                                                 <input type="submit" name="create" value="Submit" class="btn btn-success">
                                             </div>
                                         </div>
@@ -173,6 +184,17 @@
                                             <div class="col-sm-12">
                                                 <label>Name</label>
                                                 <input type="text" name="name" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Unit</label>
+                                                <select name="unit" class="form-control">
+                                                    @foreach (App\Site::get_records('units') as $r)
+                                                        <option value="{{ $r->name }}">{{ $r->name }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
 

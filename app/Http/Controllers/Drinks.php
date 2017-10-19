@@ -135,13 +135,14 @@ class Drinks extends Controller
         }
 
         if(isset($_POST['add_material'])){
-            $product_id = $this->site_model->fil_num($request->input('product_id'));
+            $product_list_id = $this->site_model->fil_num($request->input('product_list_id'));
             $drink_id = $this->site_model->fil_num($request->input('drink_id'));
             $quantity = $this->site_model->fil_num($request->input('quantity'));
+
             
             $date = date("Y-m-d H:i:s");
 
-            if(empty($product_id) OR empty($drink_id)){
+            if(empty($product_list_id) OR empty($drink_id)){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Operation Failed.
@@ -174,24 +175,37 @@ class Drinks extends Controller
                 exit();
             }
 
-            $in_data = ['product_id'=>$product_id,
-                'drink_id'=>$drink_id,
-                'quantity'=>$quantity,
-                'created_at'=>$date,
-                'created_by'=>$this->staff_id,
-                'updated_at'=>$date,
-                'updated_by'=>$this->staff_id,
-                ];
+            $r = DB::select("SELECT * FROM drink_products WHERE drink_id='$drink_id' AND product_list_id='$product_list_id'");
+            if(count($r) > 0){
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                ERROR: product is assigned.
+                            </div>";
+                $url = url('/drinks');
+                header("Location: $url");
+                exit();   
+            }
+            else{
 
-            DB::table('drink_products')->insert($in_data);
+                $in_data = ['product_list_id'=>$product_list_id,
+                    'drink_id'=>$drink_id,
+                    'quantity'=>$quantity,
+                    'created_at'=>$date,
+                    'created_by'=>$this->staff_id,
+                    'updated_at'=>$date,
+                    'updated_by'=>$this->staff_id,
+                    ];
 
-            $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
-                            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                            SUCESSFULL: Record Added
-                        </div>";
-            $url = url('/drinks');
-            header("Location: $url");
-            exit();
+                DB::table('drink_products')->insert($in_data);
+
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                SUCESSFULL: Record Added
+                            </div>";
+                $url = url('/drinks');
+                header("Location: $url");
+                exit();
+            }
         }
 
         if(isset($_POST['delete'])){
@@ -212,6 +226,35 @@ class Drinks extends Controller
             }
 
             DB::table('drinks')->where('id', '=', $c_id)->delete();
+
+            $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
+                            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                            SUCESSFULL: Record Deleted.
+                        </div>";
+            $url = url('/drinks');
+            header("Location: $url");
+            exit();
+            
+        }
+
+        if(isset($_POST['delete_material'])){
+            $c_id = $request->input('c_id');
+
+            $date = date("Y-m-d H:i:s");
+
+
+            if(empty($c_id)){
+                //set notification session
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                <strong>ERROR: </strong> Operation Failed.
+                                </div>";
+                $url = url('/drinks');
+                header("Location: $url");
+                exit();
+            }
+
+            DB::table('drink_products')->where('id', '=', $c_id)->delete();
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
