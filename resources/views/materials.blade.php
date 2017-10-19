@@ -11,10 +11,12 @@
                     var d = $(this).data('all');
 
                     $("#editModal [name='c_id']").val(d.id);
-                    $("#editModal [name='name']").val(d.name);
+                    $("#editModal [name='product_list_id']").val(d.product_list_id);
                     $("#editModal [name='supplier_id']").val(d.supplier_id);
                     $("#editModal [name='unit']").val(d.unit);
                     $("#editModal [name='cost']").val(d.cost);
+                    $("#editModal [name='price_per_qty']").val(d.price_per_qty);
+                    $("#editModal [name='quantity']").val(d.quantity);
                     
                     $("#editModal").modal('show');
                 }
@@ -66,7 +68,7 @@
                         <div class="white-box">
                             <div class="col-in row">
                                 <div class="col-md-6 col-sm-6 col-xs-6"> <i data-icon="E" class="linea-icon linea-basic"></i>
-                                    <h5 class="text-muted vb">Total Number of Products</h5> </div>
+                                    <h5 class="text-muted vb">Total Products in Store</h5> </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6">
                                     <h3 class="counter text-right m-t-15 text-danger">{{ count(App\Site::get_records('products')) }}</h3> </div>
                                 <div class="col-md-12 col-sm-12 col-xs-12">
@@ -99,19 +101,21 @@
                         @endif
                         <div class="white-box">
                                                       
-                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Product</a>
+                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Record</a>
                             <br>                           
                             <br> 
 
                             <div class="table-responsive">
-                                <table class="table table-borderedb" id="cs-data-table">
+                                <table class="table table-bordered" id="cs-data-table">
                                     <thead>
                                         <tr>
-                                            <th>NAME</th>
-                                            <th>Product CODE</th>
+                                            <th>PRODUCT CODE</th>
+                                            <th>PRODUCT NAME</th>
                                             <th>SUPPLIER</th>
-                                            <th>QUANTITY</th>
-                                            <th>COST PER QUANTITY</th>
+                                            <th>QUANTITY PURCHASED</th>
+                                            <th>QUANTITY AVAILABLE</th>
+                                            <th>PRICE PER QUANTITY</th>
+                                            <th>PURCHASED COST</th>
                                             <th>DATE CREATED</th>
                                             <th>CREATED BY</th>
                                             <th>ACTIONS</th>
@@ -122,10 +126,13 @@
                                         @if(count(App\Site::get_records('products')) > 0)
                                            @foreach (App\Site::get_records('products') as $r)
                                                 <tr>
-                                                    <td>{{ $r->name }}</td>
                                                     <td>{{ $r->uq_id }}</td>
-                                                    <td>{{ App\Site::get_record("suppliers", $r->supplier_id)->uq_id }}</td>
-                                                    <td>1 {{ $r->unit }}</td>
+                                                    <td>{{ App\Site::get_record("product_list", $r->product_list_id)->name }}</td>
+                                                    <td>{{ App\Site::get_record("suppliers", $r->supplier_id)->uq_id }} - {{ App\Site::get_record("suppliers", $r->supplier_id)->name }}</td>
+                                                    
+                                                    <td> {{ $r->quantity }} {{ $r->unit }}</td>
+                                                    <td> {{ $r->quantity }} {{ $r->unit }}</td>
+                                                    <td>{{ $r->price_per_qty }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     <td>{{ $r->cost }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
@@ -165,14 +172,25 @@
                                     <div class="col-md-12">  
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Name</label>
-                                                <input type="text" name="name" class="form-control">
+                                                <label>Select Product</label>
+                                                <select name="product_list_id" class="form-control">
+                                                    @foreach (App\Site::get_records('product_list') as $r)
+                                                        <option value="{{ $r->id }}">{{ $r->name }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Quantity Unit</label>
+                                                <label>Quantity </label>
+                                                <input type="text" name="quantity" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Unit</label>
                                                 <select name="unit" class="form-control">
                                                     @foreach (App\Site::get_records('units') as $r)
                                                         <option value="{{ $r->name }}">{{ $r->name }}</option>
@@ -183,8 +201,15 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Cost Per Quantity ({{ App\Site::get_settings("currency")->value }})</label>
+                                                <label>Purchase Cost ({{ App\Site::get_settings("currency")->value }})</label>
                                                 <input type="text" name="cost" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Price Per Quantity ({{ App\Site::get_settings("currency")->value }})</label>
+                                                <input type="text" name="price_per_qty" class="form-control">
                                             </div>
                                         </div>
 
@@ -235,14 +260,25 @@
                                     <div class="col-md-12">                        
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Name</label>
-                                                <input type="text" name="name" class="form-control">
+                                                <label>Select Product</label>
+                                                <select name="product_list_id" class="form-control">
+                                                    @foreach (App\Site::get_records('product_list') as $r)
+                                                        <option value="{{ $r->id }}">{{ $r->name }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Quantity</label>
+                                                <label>Quantity </label>
+                                                <input type="text" name="quantity" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Unit</label>
                                                 <select name="unit" class="form-control">
                                                     @foreach (App\Site::get_records('units') as $r)
                                                         <option value="{{ $r->name }}">{{ $r->name }}</option>
@@ -253,8 +289,15 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Cost Per Quantity ({{ App\Site::get_settings("currency")->value }})</label>
+                                                <label>Purchase Cost ({{ App\Site::get_settings("currency")->value }})</label>
                                                 <input type="text" name="cost" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Price Per Quantity ({{ App\Site::get_settings("currency")->value }})</label>
+                                                <input type="text" name="price_per_qty" class="form-control">
                                             </div>
                                         </div>
 
@@ -300,7 +343,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Delete Machine</h4>
+                            <h4 class="modal-title">Delete Product</h4>
                         </div>
                         
                         <div class="modal-body">

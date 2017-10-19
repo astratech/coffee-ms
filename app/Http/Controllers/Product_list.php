@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Site;
 use DB;	
 
-class Products extends Controller
+class Product_list extends Controller
 {
     public function __construct() {
         $this->site_model = new Site;
@@ -33,13 +33,8 @@ class Products extends Controller
         }
 
         if(isset($_POST['create'])){
-            $uq_id = $this->site_model->gen_uq_id("MTR");
-            $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
-            $unit = $this->site_model->fil_string($request->input('unit'));
-            $product_list_id = $this->site_model->fil_num($request->input('product_list_id'));
-            $cost = $this->site_model->fil_num($request->input('cost'));
-            $price_per_qty = $this->site_model->fil_num( $request->input('price_per_qty'));
-            $quantity = $this->site_model->fil_num( $request->input('quantity'));
+
+            $name = $this->site_model->fil_string($request->input('name'));
 
             $date = date("Y-m-d H:i:s");
 
@@ -50,44 +45,38 @@ class Products extends Controller
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
-                    $url = url('/products');
+                    $url = url('/product_list');
                     header("Location: $url");
                     exit();
                 }
             }
 
-            $r = DB::select("SELECT * FROM products WHERE uq_id='uq_id'");
+            $r = DB::select("SELECT * FROM product_list WHERE name='$name'");
             if(count($r) > 0){
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> Raw Material already Exist.
+                                <strong>ERROR: </strong> $name already Exist.
                             </div>";
 
-                $url = url('/products');
+                $url = url('/product_list');
                 header("Location: $url");
                 exit();
             }
             else{
-                $in_data = ['product_list_id'=>$product_list_id,
-                    'supplier_id'=>$supplier_id,
-                    'unit'=>$unit,
-                    'uq_id'=>$uq_id,
-                    'cost'=>$cost,
-                    'price_per_qty'=>$price_per_qty,
-                    'quantity'=>$quantity,
+                $in_data = ['name'=>$name,
                     'created_at'=>$date,
                     'created_by'=>$this->staff_id,
                     'updated_by'=>$this->staff_id,
                     'updated_at'=>$date
                     ];
 
-                DB::table('products')->insert($in_data);
+                DB::table('product_list')->insert($in_data);
 
                 $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 SUCESSFULL: Record Added
                             </div>";
-                $url = url('/products');
+                $url = url('/product_list');
                 header("Location: $url");
                 exit();
             }
@@ -97,12 +86,8 @@ class Products extends Controller
 
         if(isset($_POST['update'])){
             $c_id = $this->site_model->fil_string($request->input('c_id'));
-            $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
-            $unit = $this->site_model->fil_string($request->input('unit'));
-            $product_list_id = $this->site_model->fil_num($request->input('product_list_id'));
-            $cost = $this->site_model->fil_num($request->input('cost'));
-            $price_per_qty = $this->site_model->fil_num( $request->input('price_per_qty'));
-            $quantity = $this->site_model->fil_num( $request->input('quantity'));
+            $name = $this->site_model->fil_string($request->input('name'));
+            
             $date = date("Y-m-d H:i:s");
 
             foreach ($_POST as $key => $val) {
@@ -118,30 +103,37 @@ class Products extends Controller
                 }
             }
 
+            $r = DB::select("SELECT * FROM product_list WHERE name='$name' AND id!='$c_id'");
+            if(count($r) > 0){
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                ERROR: $name is assigned.
+                            </div>";
+                $url = url('/product_list');
+                header("Location: $url");
+                exit();   
+            }
+            else{
+                $in_data = ['name'=>$name,
+                    'updated_by'=>$this->staff_id,
+                    'updated_at'=>$date
+                ];
 
-            $in_data = ['product_list_id'=>$product_list_id,
-                'supplier_id'=>$supplier_id,
-                'unit'=>$unit,
-                'uq_id'=>$uq_id,
-                'cost'=>$cost,
-                'price_per_qty'=>$price_per_qty,
-                'quantity'=>$quantity,
-                'updated_by'=>$this->staff_id,
-                'updated_at'=>$date
-            ];
-
-            DB::table('products')
-                    ->where('id', $c_id)
-                    ->update($in_data);
+                DB::table('product_list')
+                        ->where('id', $c_id)
+                        ->update($in_data);
 
 
-            $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
-                            <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                            SUCESSFULL: Record Updated.
-                        </div>";
-            $url = url('/products');
-            header("Location: $url");
-            exit();    
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                SUCESSFULL: Record Updated.
+                            </div>";
+                $url = url('/product_list');
+                header("Location: $url");
+                exit();    
+            }
+
+
             
         }
 
@@ -157,26 +149,26 @@ class Products extends Controller
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Operation Failed.
                                 </div>";
-                $url = url('/machines');
+                $url = url('/product_list');
                 header("Location: $url");
                 exit();
             }
 
-            DB::table('products')->where('id', '=', $c_id)->delete();
+            DB::table('product_list')->where('id', '=', $c_id)->delete();
 
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                             SUCESSFULL: Record Deleted.
                         </div>";
-            $url = url('/products');
+            $url = url('/product_list');
             header("Location: $url");
             exit();
             
         }
 
-        $data['page_title'] = "Products Store";
+        $data['page_title'] = "Product List";
         
-        echo view('materials', $data);
+        echo view('product_list', $data);
         echo view('footer');
         exit();
         // exit();
