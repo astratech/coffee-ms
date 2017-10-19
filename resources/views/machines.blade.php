@@ -134,7 +134,7 @@
                                                     <td>{{ App\Site::get_record("suppliers", $r->supplier_id)->uq_id }}</td>
                                                     <td>{{ $r->price }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     <td>{{ $r->counter_status }}</td>
-                                                    <td>{{ $r->leasing_rate }}</td>
+                                                    <td>{{ $r->leasing_rate }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
                                                     <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>
@@ -212,7 +212,7 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Price</label>
+                                                <label>Price ({{ App\Site::get_settings("currency")->value }})</label>
                                                 <input type="text" name="price" class="form-control">
                                             </div>
                                         </div>
@@ -226,7 +226,7 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Leasing Rate</label>
+                                                <label>Leasing Rate ({{ App\Site::get_settings("currency")->value }})</label>
                                                 <input type="text" name="leasing_rate" class="form-control">
                                             </div>
                                         </div>

@@ -95,9 +95,6 @@ class Machines extends Controller
                 exit();
             }
         }
-
-        
-
         
 
         if(isset($_POST['update'])){
@@ -105,17 +102,16 @@ class Machines extends Controller
             $model = $this->site_model->fil_string($request->input('model'));
             $serial_num = $this->site_model->fil_string($request->input('serial_num'));
             $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
-            $price = $this->site_model->fil_string($request->input('price'));
-            $counter_status = $this->site_model->fil_string($request->input('counter_status'));
-            $leasing_rate = $this->site_model->fil_string($request->input('leasing_rate'));
+            $price = $this->site_model->fil_num($request->input('price'));
+            $counter_status = $this->site_model->fil_num($request->input('counter_status'));
+            $leasing_rate = $this->site_model->fil_num($request->input('leasing_rate'));
             $uq_id = $this->site_model->fil_string($request->input('uq_id'));
             $c_id = $this->site_model->fil_string($request->input('c_id'));
 
             $date = date("Y-m-d H:i:s");
 
             foreach ($_POST as $key => $val) {
-                if (empty($val) OR empty($c_id)) {
-
+                if ((empty($val) OR empty($c_id)) AND $key != "counter_status") {
                     $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
