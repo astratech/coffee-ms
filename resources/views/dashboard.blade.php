@@ -319,7 +319,7 @@
                                             <div class="col-sm-12">
                                                 <label>Machine</label>
                                                 <select name="machine_id" class="form-control">
-                                                    @foreach (App\Site::get_records('machines') as $r)
+                                                    @foreach (DB::select("SELECT * FROM machines WHERE is_rented='1'") as $r)
                                                         <option value="{{ $r->id }}">  {{ $r->uq_id }} - {{ $r->model }}</option>
                                                     @endforeach
                                                 </select>

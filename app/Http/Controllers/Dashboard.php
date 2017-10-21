@@ -181,6 +181,11 @@ class Dashboard extends Controller{
 
             DB::table('rents')->insert($in_data);
 
+            // update Machine is rented
+            DB::table('machines')
+                        ->where('id', $machine_id)
+                        ->update(['is_rented'=>1]);
+
             $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                             SUCESSFULL: Record Added
