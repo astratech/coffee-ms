@@ -49,6 +49,21 @@
                 }
             });
 
+            $(".add-product").click(function (e) {
+                e.preventDefault();
+                try{
+                    var d = $(this).data('all');
+
+                    $("#prodModal [name='rent_id']").val(d.id);
+                    
+                    
+                    $("#prodModal").modal('show');
+                }
+                catch(err){
+                    alert(err);
+                }
+            });
+
             $(".remove-drink").click(function (e) {
                 e.preventDefault();
                 try{
@@ -209,6 +224,7 @@
                                             <th>RENT PRICE</th>
                                             <th>MACHINE ID</th>
                                             <th>ASSIGNED DRINKS</th>
+                                            <th>ASSIGNED PRODUCTS</th>
                                             <th>DATE CREATED</th>
                                             <th>ACTIONS</th>
                                         </tr>
@@ -239,6 +255,18 @@
                                                         <p><button class="btn btn-info btn-xs add-drink" data-all="{{ (json_encode($r)) }}">+ Add Drink</button></p>
                                                     </td>
                                                     
+                                                    <td>
+                                                        @if(count(DB::select("SELECT * FROM rent_products WHERE rent_id='$r->id'")) > 0)
+                                                            @foreach(DB::select("SELECT * FROM rent_products WHERE rent_id='$r->id'") as $d)
+                                                               <p>- {{  App\Site::get_record("product_list", App\Site::get_record("products", $d->product_store_id)->product_list_id)->name }} ({{ $d->quantity }} {{  App\Site::get_record("product_list", App\Site::get_record("products", $d->product_store_id)->product_list_id)->unit }})  <button class="btn btn-info btn-xs remove-product" data-all="{{ (json_encode($d)) }}">X</button></p>
+                                                            @endforeach
+                                                            
+                                                        @else
+                                                            <p>No Products</p>
+                                                        @endif
+                                                        <p><button class="btn btn-info btn-xs add-product" data-all="{{ (json_encode($r)) }}">+ Add Product</button></p>
+                                                    </td>
+
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
                                                     <td>
                                                         <a class="btn btn-primary btn-xs" href="{{ url("/invoice/$r->uq_id") }}" target="_blank">Generate Invoice</a>
@@ -459,6 +487,64 @@
                                         <div class="form-group">
                                             <div class="col-sm-12">
                                                 <input type="submit" name="add_drink" value="Add Drink" class="btn btn-success">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="prodModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Add Product</h4>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <div class="row">
+                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                    {{ csrf_field() }}
+                                    <div class="col-md-12">  
+                                        
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Select Product</label>
+                                                <select name="product_id" class="form-control">
+                                                    @foreach (App\Site::get_records('products') as $r)
+                                                        <option value="{{ $r->id }}">{{ $r->uq_id }} {{ App\Site::get_record('product_list', $r->product_list_id)->name }} - {{ App\Site::calc_prod_qty_available($r->id) }} {{ App\Site::get_record('product_list', $r->product_list_id)->unit }} Available</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Quantity</label>
+                                                <input type="number" name="quantity" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="hidden" name="rent_id">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="submit" name="add_product" value="Add Product" class="btn btn-success">
                                             </div>
                                         </div>
                                     </div>

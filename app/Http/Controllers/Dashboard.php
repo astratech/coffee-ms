@@ -34,6 +34,68 @@ class Dashboard extends Controller{
             exit();
         }
 
+        if(isset($_POST['add_product'])){
+            $rent_id = $this->site_model->fil_num($request->input('rent_id'));
+            $product_id = $this->site_model->fil_num($request->input('product_id'));
+            $quantity = $this->site_model->fil_num($request->input('quantity'));
+            
+            $date = date("Y-m-d H:i:s");
+
+            if(empty($quantity)){
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                <strong>ERROR: </strong> Enter Quantity.
+                            </div>";
+
+                $url = url('/dashboard');
+                header("Location: $url");
+                exit();
+            }
+
+            $available = Site::calc_prod_qty_available($product_id);
+
+            if($quantity > $available){
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                <strong>ERROR: </strong> Only $available Quantity is available for the product.
+                            </div>";
+
+                $url = url('/dashboard');
+                header("Location: $url");
+                exit();
+            }
+
+            $r = DB::select("SELECT * FROM rent_products WHERE rent_id='$rent_id' AND product_store_id='$product_id'");
+            if(count($r) > 0){
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                <strong>ERROR: </strong> This Product is already added to this Rent.
+                            </div>";
+
+                $url = url('/dashboard');
+                header("Location: $url");
+                exit();
+            }
+            else{
+                $in_data = ['rent_id'=>$rent_id,
+                    'product_store_id'=>$product_id,
+                    'quantity'=>$quantity,
+                    'created_at'=>$date,
+                    'created_by'=>$this->staff_id,
+                    ];
+
+                DB::table('rent_products')->insert($in_data);
+
+                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
+                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
+                                SUCESSFULL: Product Added to Rent.
+                            </div>";
+                $url = url('/dashboard');
+                header("Location: $url");
+                exit();
+            }
+        }
+
         if(isset($_POST['add_drink'])){
             $rent_id = $this->site_model->fil_string($request->input('rent_id'));
             $drink_id = $this->site_model->fil_string($request->input('drink_id'));

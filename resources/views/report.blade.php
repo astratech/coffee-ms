@@ -126,7 +126,7 @@
                                                                         $t_m_cost = $t_m_cost + $m_cost;
                                                                         $single_cost = $t_m_cost * $r->num_of_purchase;
                                                                     @endphp
-                                                                    <p>- {{ App\Site::get_record("products", $i->product_id)->name }} - ( {{ $i->quantity }} {{ App\Site::get_record("products", $i->product_id)->unit }} * {{ App\Site::get_record("products", $i->product_id)->cost }} {{ App\Site::get_settings("currency")->value }} = {{ $m_cost }} {{ App\Site::get_settings("currency")->value }})</p>
+                                                                    {{-- <p>- {{ App\Site::get_record("product_list", $i->product_id)->name }} - ( {{ $i->quantity }} {{ App\Site::get_record("product_list", $i->product_id)->unit }} * {{ App\Site::get_record("products", $i->product_id)->cost }} {{ App\Site::get_settings("currency")->value }} = {{ $m_cost }} {{ App\Site::get_settings("currency")->value }})</p> --}}
                                                                 @endforeach
                                                                 <p>Drink Cost Price = {{ $t_m_cost }} {{ App\Site::get_settings("currency")->value }}</p>
                                                             </td>

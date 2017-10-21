@@ -153,4 +153,18 @@ class Site extends Model{
 
         return $output; 
     }
+
+    public static function calc_prod_qty_available($product_id){
+        $quantity = Site::get_record("products", $product_id)->quantity;
+
+        $available = 0;
+        $used = 0;
+        $q = DB::select("SELECT * FROM rent_products WHERE product_store_id='$product_id'");
+        foreach($q as $d){
+            $used = $used + $d->quantity;
+        }
+
+        return ($quantity - $used);
+       
+    }
 }

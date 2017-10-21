@@ -13,6 +13,7 @@
                     $("#editModal [name='c_id']").val(d.id);
                     $("#editModal [name='name']").val(d.name);
                     $("#editModal [name='unit']").val(d.unit);
+                    $("#editModal [name='price_per_qty']").val(d.price_per_qty);
                     
                     $("#editModal").modal('show');
                 }
@@ -81,6 +82,7 @@
                                         <tr>
                                             <th>NAME</th>
                                             <th>UNIT</th>
+                                            <th>PRICE PER QTY</th>
                                             <th>DATE CREATED</th>
                                             <th>CREATED BY</th>
                                             <th>ACTIONS</th>
@@ -93,6 +95,7 @@
                                                 <tr>
                                                     <td>{{ $r->name }}</td>
                                                     <td>{{ $r->unit }}</td>
+                                                    <td>{{ $r->price_per_qty }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
                                                     <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>
                                                     <td>
@@ -136,13 +139,18 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-6">
                                                 <label>Unit</label>
                                                 <select name="unit" class="form-control">
                                                     @foreach (App\Site::get_records('units') as $r)
                                                         <option value="{{ $r->name }}">{{ $r->name }}</option>
                                                     @endforeach
                                                 </select>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label>Price Per Quantity</label>
+                                                <input type="number" name="price_per_qty" class="form-control">
                                             </div>
                                         </div>
 
@@ -188,13 +196,18 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <div class="col-sm-12">
+                                            <div class="col-sm-6">
                                                 <label>Unit</label>
                                                 <select name="unit" class="form-control">
                                                     @foreach (App\Site::get_records('units') as $r)
                                                         <option value="{{ $r->name }}">{{ $r->name }}</option>
                                                     @endforeach
                                                 </select>
+                                            </div>
+
+                                            <div class="col-sm-6">
+                                                <label>Price Per Quantity</label>
+                                                <input type="number" name="price_per_qty" class="form-control">
                                             </div>
                                         </div>
 

@@ -15,7 +15,6 @@
                     $("#editModal [name='supplier_id']").val(d.supplier_id);
                     $("#editModal [name='unit']").val(d.unit);
                     $("#editModal [name='cost']").val(d.cost);
-                    $("#editModal [name='price_per_qty']").val(d.price_per_qty);
                     $("#editModal [name='quantity']").val(d.quantity);
                     
                     $("#editModal").modal('show');
@@ -114,7 +113,6 @@
                                             <th>SUPPLIER</th>
                                             <th>QUANTITY PURCHASED</th>
                                             <th>QUANTITY AVAILABLE</th>
-                                            <th>PRICE PER QUANTITY</th>
                                             <th>PURCHASED COST</th>
                                             <th>DATE CREATED</th>
                                             <th>CREATED BY</th>
@@ -131,8 +129,7 @@
                                                     <td>{{ App\Site::get_record("suppliers", $r->supplier_id)->uq_id }} - {{ App\Site::get_record("suppliers", $r->supplier_id)->name }}</td>
                                                     
                                                     <td> {{ $r->quantity }} {{ App\Site::get_record("product_list", $r->product_list_id)->unit }}</td>
-                                                    <td> {{ $r->quantity }} {{ App\Site::get_record("product_list", $r->product_list_id)->unit }}</td>
-                                                    <td>{{ $r->price_per_qty }} {{ App\Site::get_settings("currency")->value }}</td>
+                                                    <td> {{ App\Site::calc_prod_qty_available($r->id) }} {{ App\Site::get_record("product_list", $r->product_list_id)->unit }}</td>
                                                     <td>{{ $r->cost }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
@@ -192,13 +189,6 @@
                                             <div class="col-sm-12">
                                                 <label>Purchase Cost ({{ App\Site::get_settings("currency")->value }})</label>
                                                 <input type="text" name="cost" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Price Per Quantity ({{ App\Site::get_settings("currency")->value }})</label>
-                                                <input type="text" name="price_per_qty" class="form-control">
                                             </div>
                                         </div>
 
@@ -271,14 +261,7 @@
                                                 <input type="text" name="cost" class="form-control">
                                             </div>
                                         </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Price Per Quantity ({{ App\Site::get_settings("currency")->value }})</label>
-                                                <input type="text" name="price_per_qty" class="form-control">
-                                            </div>
-                                        </div>
-
+ 
                                         <div class="form-group">
                                             <div class="col-sm-12">
                                                 <label>Supplier</label>

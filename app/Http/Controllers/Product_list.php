@@ -37,6 +37,7 @@ class Product_list extends Controller
 
             $name = $this->site_model->fil_string($request->input('name')); 
             $unit = $this->site_model->fil_string($request->input('unit')); 
+            $price_per_qty = $this->site_model->fil_num($request->input('price_per_qty')); 
 
             $date = date("Y-m-d H:i:s");
 
@@ -67,6 +68,7 @@ class Product_list extends Controller
             else{
                 $in_data = ['name'=>$name,
                     'unit'=>$unit,
+                    'price_per_qty'=>$price_per_qty,
                     'created_at'=>$date,
                     'created_by'=>$this->staff_id,
                     'updated_by'=>$this->staff_id,
@@ -91,6 +93,7 @@ class Product_list extends Controller
             $c_id = $this->site_model->fil_num($request->input('c_id'));
             $name = $this->site_model->fil_string($request->input('name'));
             $unit = $this->site_model->fil_string($request->input('unit'));
+            $price_per_qty = $this->site_model->fil_num($request->input('price_per_qty')); 
             
             $date = date("Y-m-d H:i:s");
 
@@ -120,6 +123,7 @@ class Product_list extends Controller
             else{
                 $in_data = ['name'=>$name,
                     'unit'=>$unit,
+                    'price_per_qty'=>$price_per_qty,
                     'updated_by'=>$this->staff_id,
                     'updated_at'=>$date
                 ];
