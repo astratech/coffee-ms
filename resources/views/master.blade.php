@@ -52,6 +52,7 @@
     <script src="{{ URL::asset('site/plugins/bower_components/counterup/jquery.counterup.min.js') }}"></script>
     <!--Morris JavaScript -->
     <script src="{{ URL::asset('site/plugins/bower_components/raphael/raphael-min.js') }}"></script>
+    <script src="{{ URL::asset('site/printjs.js') }}"></script>
     
 
     @yield('script')

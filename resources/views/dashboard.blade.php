@@ -241,7 +241,7 @@
                                                     
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
                                                     <td>
-                                                        <button class="btn btn-primary btn-xs" data-all="{{ (json_encode($r)) }}">Generate Invoice</button>
+                                                        <a class="btn btn-primary btn-xs" href="{{ url("/invoice/$r->uq_id") }}" target="_blank">Generate Invoice</a>
                                                         <br/>
                                                         <br/>
                                                         <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>

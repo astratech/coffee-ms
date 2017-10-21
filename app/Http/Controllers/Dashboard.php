@@ -298,7 +298,7 @@ class Dashboard extends Controller{
         exit();
     }
 
-    public function add(Request $request, $rent_uq_id){
+    public function invoice(Request $request, $rent_uq_id){
 
         // echo "$rent_uq_id";
         // exit();
@@ -318,6 +318,11 @@ class Dashboard extends Controller{
             foreach ($r as $d){
                 $data['rent_id'] = $d->id;
                 $data['rent_uq_id'] = $d->uq_id;
+                $data['rent_customer_id'] = $d->customer_id;
+                $data['rent_machine_id'] = $d->machine_id;
+                $data['rent_price'] = $d->price;
+                $data['rent_date_from'] = $d->date_from;
+                $data['rent_date_to'] = $d->date_to;
             }
         }
         else{
@@ -326,7 +331,7 @@ class Dashboard extends Controller{
                             <strong>ERROR: </strong> Rent record not found.
                         </div>";
 
-            $url = url('/accounting');
+            $url = url('/dashboard');
             header("Location: $url");
             exit();
         }
@@ -487,9 +492,9 @@ class Dashboard extends Controller{
             
         }
 
-        $data['page_title'] = "Add New Record | Accounting";
+        $data['page_title'] = "Invoice | $uq_id";
         
-        echo view('sale', $data);
+        echo view('invoice', $data);
         echo view('footer');
         exit();
         // exit();
