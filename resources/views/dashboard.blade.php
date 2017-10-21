@@ -205,6 +205,8 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>CUSTOMER ID</th>
+                                            <th>RENT PERIOD</th>
+                                            <th>RENT PRICE</th>
                                             <th>MACHINE ID</th>
                                             <th>ASSIGNED DRINKS</th>
                                             <th>DATE CREATED</th>
@@ -221,6 +223,8 @@
                                                         <p>{{ App\Site::get_record("customers", $r->customer_id)->uq_id }}</p>
                                                         <p>{{ App\Site::get_record("customers", $r->customer_id)->name }}</p>
                                                     </td>
+                                                    <td>{{ date("M d,Y", strtotime($r->date_from)) }} - {{ date("M d,Y", strtotime($r->date_to)) }}</td>
+                                                    <td>{{ $r->price }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     <td>{{ App\Site::get_record("machines", $r->machine_id)->uq_id }} <br> {{ App\Site::get_record("machines", $r->machine_id)->model }} </td>
 
                                                     <td>
@@ -237,6 +241,9 @@
                                                     
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
                                                     <td>
+                                                        <button class="btn btn-primary btn-xs" data-all="{{ (json_encode($r)) }}">Generate Invoice</button>
+                                                        <br/>
+                                                        <br/>
                                                         <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
                                                     </td>
                                                 </tr>
@@ -288,6 +295,26 @@
                                                         <option value="{{ $r->id }}">  {{ $r->uq_id }} - {{ $r->model }}</option>
                                                     @endforeach
                                                 </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-6">
+                                               <label>Rent Begins</label> 
+                                               <input type="text" name="date_from" class="form-control" data-provide="datepicker">
+                                            </div>
+
+                                             <div class="col-md-6">
+                                               <label>Rent Ends</label> 
+                                               <input type="text" name="date_to" class="form-control" data-provide="datepicker">
+                                            </div>
+                                            
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-12">
+                                               <label>Rent Price</label> 
+                                               <input type="number" name="price" class="form-control">
                                             </div>
                                         </div>
 
