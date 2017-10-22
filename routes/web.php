@@ -30,6 +30,7 @@ Route::any('/accounting', 'Accounting@index');
 Route::any('/accounting/add/{uq_id}', 'Accounting@add');
 Route::any('/invoice/{uq_id}', 'Dashboard@invoice');
 Route::any('/report/{uq_id}', 'Report@index');
+Route::any('/maintenance', 'Maintenance@index');
 
 Route::any('/card/enc/{txt}', 'Card@enc');
 Route::any('/card/dec/{txt}', 'Card@dec');

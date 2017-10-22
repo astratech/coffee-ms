@@ -124,6 +124,10 @@
                         <a href="{{ url('/accounting') }}" class="waves-effect"><span class="hide-menu">Accounting</span></a>
                     </li>
 
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/maintenance') }}" class="waves-effect"><span class="hide-menu">Maintenance</span></a>
+                    </li>
+
                 </ul>
             </div>
         </div>
