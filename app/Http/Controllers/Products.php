@@ -40,6 +40,7 @@ class Products extends Controller
             $cost = $this->site_model->fil_num($request->input('cost'));
             $quantity = $this->site_model->fil_num( $request->input('quantity'));
 
+
             $date = date("Y-m-d H:i:s");
 
             foreach ($_POST as $key => $val) {
@@ -67,11 +68,14 @@ class Products extends Controller
                 exit();
             }
             else{
+                $price_per_qty = Site::get_record("product_list", $product_list_id)->price_per_qty;
+
                 $in_data = ['product_list_id'=>$product_list_id,
                     'supplier_id'=>$supplier_id,
                     'uq_id'=>$uq_id,
                     'cost'=>$cost,
                     'quantity'=>$quantity,
+                    'price_per_qty'=>$price_per_qty,
                     'created_at'=>$date,
                     'created_by'=>$this->staff_id,
                     'updated_by'=>$this->staff_id,
@@ -113,11 +117,12 @@ class Products extends Controller
                 }
             }
 
-
+            $price_per_qty = Site::get_record("product_list", $product_list_id)->price_per_qty;
             $in_data = ['product_list_id'=>$product_list_id,
                 'supplier_id'=>$supplier_id,
                 'cost'=>$cost,
                 'quantity'=>$quantity,
+                'price_per_qty'=>$price_per_qty,
                 'updated_by'=>$this->staff_id,
                 'updated_at'=>$date
             ];
