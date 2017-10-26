@@ -110,7 +110,6 @@
                                     <thead>
                                         <tr>
                                             <th>NAME</th>
-                                            <th>MACHINE</th>
                                             <th>CUSTOMER ID</th>
                                             <th>MOBILE</th>
                                             <th>EMAIL</th>
@@ -125,7 +124,6 @@
                                         @if(count(App\Site::get_records('customers')) > 0)
                                            @foreach (App\Site::get_records('customers') as $r)
                                                 <tr>
-                                                    <td>{{$r->name}}</td>
                                                     <td>{{$r->name}}</td>
                                                     <td>{{ $r->uq_id }}</td>
                                                     <td>{{ $r->mobile }}</td>
