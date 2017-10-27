@@ -170,122 +170,175 @@
                 <!-- /.row -->
 
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="white-box">
-                            <div class="col-in row">
+                    
+                    @if(isset($page_type) AND $page_type == "single")
+                        <div class="col-md-12">
+                            <div class="white-box">
+                                <div class="col-in row">
+                                    <h4>Rents</h4>
                                 
-                                <h5>System Settings</h5>
-                                <br>
-                                <br>
-                                <br>
-                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
-                                    {{ csrf_field() }}
-                                    <div class="col-md-12">                        
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Currency</label>
-                                                <input type="text" name="currency" class="form-control" value="{{ App\Site::get_settings("currency")->value }}">
-                                            </div>
-                                        </div>
+                                @if(isset($_SESSION['notification']))
 
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="submit" name="update_settings" value="Submit" class="btn btn-success">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
+                                    {!! $_SESSION['notification'] !!}
+
+                                    @php unset($_SESSION['notification']) @endphp
+
+                                @endif
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="cs-data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>CUSTOMER ID</th>
+                                                <th>MACHINE ID</th>
+                                                <th>ASSIGNED DRINKS</th>
+                                                <th>ASSIGNED PRODUCTS</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @if(count(DB::select("SELECT * FROM rents WHERE id='$rent_id'")) > 0)
+                                               @foreach (DB::select("SELECT * FROM rents WHERE id='$rent_id'") as $r)
+                                                    <tr>
+                                                        <td>{{ $r->uq_id }}</td>
+                                                        <td>
+                                                            <p>{{ App\Site::get_record("customers", $r->customer_id)->uq_id }}</p>
+                                                            <p>{{ App\Site::get_record("customers", $r->customer_id)->name }}</p>
+                                                        </td>
+                                                        
+                                                        <td>{{ App\Site::get_record("machines", $r->machine_id)->uq_id }} <br> {{ App\Site::get_record("machines", $r->machine_id)->model }} </td>
+
+                                                        <td>
+                                                            @if(count(DB::select("SELECT * FROM rent_drinks WHERE rent_id='$r->id'")) > 0)
+                                                                @foreach(DB::select("SELECT * FROM rent_drinks WHERE rent_id='$r->id'") as $d)
+                                                                   <p>- {{  App\Site::get_record("drinks", $d->drink_id)->name }} [{{ $d->cost }} {{ App\Site::get_settings("currency")->value }}]  <button class="btn btn-info btn-xs remove-drink" data-all="{{ (json_encode($d)) }}">X</button></p>
+                                                                @endforeach
+                                                                
+                                                            @else
+                                                                <p>No Drink</p>
+                                                            @endif
+                                                            <p><button class="btn btn-info btn-xs add-drink" data-all="{{ (json_encode($r)) }}">+ Add Drink</button></p>
+                                                        </td>
+                                                        
+                                                        <td>
+                                                            @if(count(DB::select("SELECT * FROM rent_products WHERE rent_id='$r->id'")) > 0)
+                                                                @foreach(DB::select("SELECT * FROM rent_products WHERE rent_id='$r->id'") as $d)
+                                                                   <p>- {{  App\Site::get_record("product_list", App\Site::get_record("products", $d->product_store_id)->product_list_id)->name }} ({{ $d->quantity }} {{  App\Site::get_record("product_list", App\Site::get_record("products", $d->product_store_id)->product_list_id)->unit }})  <button class="btn btn-info btn-xs remove-product" data-all="{{ (json_encode($d)) }}">X</button></p>
+                                                                @endforeach
+                                                                
+                                                            @else
+                                                                <p>No Products</p>
+                                                            @endif
+                                                            <p><button class="btn btn-info btn-xs add-product" data-all="{{ (json_encode($r)) }}">+ Add Product</button></p>
+                                                        </td>
+
+                                                    </tr>
+                                               @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table> 
+
+                                </div>
+     
+                                    
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @else
+                        <div class="col-md-3">
+                            <div class="white-box">
+                                <div class="col-in row">
+                                    
+                                    <h5>System Settings</h5>
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                        {{ csrf_field() }}
+                                        <div class="col-md-12">                        
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <label>Currency</label>
+                                                    <input type="text" name="currency" class="form-control" value="{{ App\Site::get_settings("currency")->value }}">
+                                                </div>
+                                            </div>
 
-                    <div class="col-md-12">
-                        <div class="white-box">
-                            <div class="col-in row">
-                                <h4>Rents</h4>
-                                <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Record</a>
-                            <br>                           
-                            <br> 
-                            @if(isset($_SESSION['notification']))
-
-                                {!! $_SESSION['notification'] !!}
-
-                                @php unset($_SESSION['notification']) @endphp
-
-                            @endif
-
-                            <div class="table-responsive">
-                                <table class="table table-borderedb" id="cs-data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>CUSTOMER ID</th>
-                                            <th>RENT PERIOD</th>
-                                            <th>RENT PRICE</th>
-                                            <th>MACHINE ID</th>
-                                            <th>ASSIGNED DRINKS</th>
-                                            <th>ASSIGNED PRODUCTS</th>
-                                            <th>DATE CREATED</th>
-                                            <th>ACTIONS</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                        @if(count(App\Site::get_records('rents')) > 0)
-                                           @foreach (App\Site::get_records('rents') as $r)
-                                                <tr>
-                                                    <td>{{ $r->uq_id }}</td>
-                                                    <td>
-                                                        <p>{{ App\Site::get_record("customers", $r->customer_id)->uq_id }}</p>
-                                                        <p>{{ App\Site::get_record("customers", $r->customer_id)->name }}</p>
-                                                    </td>
-                                                    <td>{{ date("M d,Y", strtotime($r->date_from)) }} - {{ date("M d,Y", strtotime($r->date_to)) }}</td>
-                                                    <td>{{ $r->price }} {{ App\Site::get_settings("currency")->value }}</td>
-                                                    <td>{{ App\Site::get_record("machines", $r->machine_id)->uq_id }} <br> {{ App\Site::get_record("machines", $r->machine_id)->model }} </td>
-
-                                                    <td>
-                                                        @if(count(DB::select("SELECT * FROM rent_drinks WHERE rent_id='$r->id'")) > 0)
-                                                            @foreach(DB::select("SELECT * FROM rent_drinks WHERE rent_id='$r->id'") as $d)
-                                                               <p>- {{  App\Site::get_record("drinks", $d->drink_id)->name }} [{{ $d->cost }} {{ App\Site::get_settings("currency")->value }}]  <button class="btn btn-info btn-xs remove-drink" data-all="{{ (json_encode($d)) }}">X</button></p>
-                                                            @endforeach
-                                                            
-                                                        @else
-                                                            <p>No Drink</p>
-                                                        @endif
-                                                        <p><button class="btn btn-info btn-xs add-drink" data-all="{{ (json_encode($r)) }}">+ Add Drink</button></p>
-                                                    </td>
-                                                    
-                                                    <td>
-                                                        @if(count(DB::select("SELECT * FROM rent_products WHERE rent_id='$r->id'")) > 0)
-                                                            @foreach(DB::select("SELECT * FROM rent_products WHERE rent_id='$r->id'") as $d)
-                                                               <p>- {{  App\Site::get_record("product_list", App\Site::get_record("products", $d->product_store_id)->product_list_id)->name }} ({{ $d->quantity }} {{  App\Site::get_record("product_list", App\Site::get_record("products", $d->product_store_id)->product_list_id)->unit }})  <button class="btn btn-info btn-xs remove-product" data-all="{{ (json_encode($d)) }}">X</button></p>
-                                                            @endforeach
-                                                            
-                                                        @else
-                                                            <p>No Products</p>
-                                                        @endif
-                                                        <p><button class="btn btn-info btn-xs add-product" data-all="{{ (json_encode($r)) }}">+ Add Product</button></p>
-                                                    </td>
-
-                                                    <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
-                                                    <td>
-                                                        <a class="btn btn-primary btn-xs" href="{{ url("/invoice/$r->uq_id") }}" target="_blank">Generate Invoice</a>
-                                                        <br/>
-                                                        <br/>
-                                                        <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
-                                                    </td>
-                                                </tr>
-                                           @endforeach
-                                        @endif
-                                    </tbody>
-                                </table> 
-
-                            </div>
- 
-                                
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <input type="submit" name="update_settings" value="Submit" class="btn btn-success">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                        <div class="col-md-12">
+                            <div class="white-box">
+                                <div class="col-in row">
+                                    <h4>Rents</h4>
+                                    <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Record</a>
+                                <br>                           
+                                <br> 
+                                @if(isset($_SESSION['notification']))
+
+                                    {!! $_SESSION['notification'] !!}
+
+                                    @php unset($_SESSION['notification']) @endphp
+
+                                @endif
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="cs-data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>CUSTOMER ID</th>
+                                                <th>RENT PERIOD</th>
+                                                <th>RENT PRICE</th>
+                                                <th>MACHINE ID</th>
+                                                
+                                                <th>DATE CREATED</th>
+                                                <th>ACTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @if(count(App\Site::get_records('rents')) > 0)
+                                               @foreach (App\Site::get_records('rents') as $r)
+                                                    <tr>
+                                                        <td>{{ $r->uq_id }}</td>
+                                                        <td>
+                                                            <p>{{ App\Site::get_record("customers", $r->customer_id)->uq_id }}</p>
+                                                            <p>{{ App\Site::get_record("customers", $r->customer_id)->name }}</p>
+                                                        </td>
+                                                        <td>{{ date("M d,Y", strtotime($r->date_from)) }} - {{ date("M d,Y", strtotime($r->date_to)) }}</td>
+                                                        <td>{{ $r->price }} {{ App\Site::get_settings("currency")->value }}</td>
+                                                        <td>{{ App\Site::get_record("machines", $r->machine_id)->uq_id }} <br> {{ App\Site::get_record("machines", $r->machine_id)->model }} </td>
+
+
+                                                        <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
+                                                        <td>
+                                                            <a class="btn btn-primary btn-xs" href="{{ url("/dashboard/$r->id") }}" target="_blank">View</a>
+                                                            <a class="btn btn-primary btn-xs" href="{{ url("/invoice/$r->uq_id") }}" target="_blank">Generate Invoice</a>
+                                                            
+                                                            <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
+                                                        </td>
+                                                    </tr>
+                                               @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table> 
+
+                                </div>
+     
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
             <!-- /.container-fluid -->

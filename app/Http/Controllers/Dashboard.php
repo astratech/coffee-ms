@@ -23,7 +23,7 @@ class Dashboard extends Controller{
     }
 
     
-    public function index(Request $request){
+    public function index(Request $request, $rent_id = NULL){
 
 
         if(isset($_POST['logout'])){
@@ -355,6 +355,19 @@ class Dashboard extends Controller{
             header("Location: $url");
             exit();
             
+        }
+
+        if(!is_null($rent_id)){
+            $r = DB::select("SELECT * FROM rents WHERE id='$rent_id'");
+            if(count($r) > 0){
+                $data['page_type'] = "single";
+                $data['rent_id'] = $rent_id;
+            }
+            else{
+                $url = url('/dashboard');
+                header("Location: $url");
+                exit();
+            }
         }
 
         $data['page_title'] = "Dashboard";

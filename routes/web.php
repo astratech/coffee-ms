@@ -19,6 +19,7 @@ Route::any('/', 'Login@index');
 Route::any('/login', 'Login@index');
 Route::any('/logout', 'Login@logout');
 Route::any('/dashboard', 'Dashboard@index');
+Route::any('/dashboard/{rent_id}', 'Dashboard@index');
 Route::any('/suppliers', 'Suppliers@index');
 Route::any('/customers', 'Customers@index');
 Route::any('/machines', 'Machines@index');
