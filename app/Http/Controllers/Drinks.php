@@ -22,7 +22,7 @@ class Drinks extends Controller
     }
 
     
-    public function index(Request $request){
+    public function index(Request $request, $drink_id = NULL){
 
         if(isset($_POST['logout'])){
             unset($_SESSION['coffee_admin_logged']);
@@ -148,7 +148,7 @@ class Drinks extends Controller
                                 <strong>ERROR: </strong> Operation Failed.
                             </div>";
 
-                $url = url('/drinks');
+                $url = url("/drinks/$drink_id");
                 header("Location: $url");
                 exit();
             }
@@ -159,7 +159,7 @@ class Drinks extends Controller
                                 <strong>ERROR: </strong> Fill the empty fields
                             </div>";
 
-                $url = url('/drinks');
+                $url = url("/drinks/$drink_id");
                 header("Location: $url");
                 exit();
             }
@@ -170,7 +170,7 @@ class Drinks extends Controller
                                 <strong>ERROR: </strong> Invalid Input for quantity.
                             </div>";
 
-                $url = url('/drinks');
+                $url = url("/drinks/$drink_id");
                 header("Location: $url");
                 exit();
             }
@@ -181,7 +181,7 @@ class Drinks extends Controller
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 ERROR: product is assigned.
                             </div>";
-                $url = url('/drinks');
+                $url = url("/drinks/$drink_id");
                 header("Location: $url");
                 exit();   
             }
@@ -202,7 +202,7 @@ class Drinks extends Controller
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 SUCESSFULL: Record Added
                             </div>";
-                $url = url('/drinks');
+                $url = url("/drinks/$drink_id");
                 header("Location: $url");
                 exit();
             }
@@ -249,7 +249,7 @@ class Drinks extends Controller
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Operation Failed.
                                 </div>";
-                $url = url('/drinks');
+                $url = url("/drinks/$drink_id");
                 header("Location: $url");
                 exit();
             }
@@ -260,10 +260,23 @@ class Drinks extends Controller
                             <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                             SUCESSFULL: Record Deleted.
                         </div>";
-            $url = url('/drinks');
+            $url = url("/drinks/$drink_id");
             header("Location: $url");
             exit();
             
+        }
+
+        if(!is_null($drink_id)){
+            $r = DB::select("SELECT * FROM drinks WHERE id='$drink_id'");
+            if(count($r) > 0){
+                $data['page_type'] = "single";
+                $data['drink_id'] = $drink_id;
+            }
+            else{
+                $url = url('/drinks');
+                header("Location: $url");
+                exit();
+            }
         }
 
         $data['page_title'] = "Drinks";
@@ -272,5 +285,9 @@ class Drinks extends Controller
         echo view('footer');
         exit();
         // exit();
+    }
+
+    public function view(Request $request, $drink_id){
+
     }
 }

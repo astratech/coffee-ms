@@ -26,6 +26,7 @@ Route::any('/units', 'Units@index');
 Route::any('/products', 'Products@index');
 Route::any('/product_list', 'Product_list@index');
 Route::any('/drinks', 'Drinks@index');
+Route::any('/drinks/{drink_id}', 'Drinks@index');
 Route::any('/accounting', 'Accounting@index');
 Route::any('/accounting/add/{uq_id}', 'Accounting@add');
 Route::any('/invoice/{uq_id}', 'Dashboard@invoice');
