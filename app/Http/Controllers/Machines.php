@@ -36,17 +36,18 @@ class Machines extends Controller
             $company_name = $this->site_model->fil_string($request->input('company_name'));
             $model = $this->site_model->fil_string($request->input('model'));
             $serial_num = $this->site_model->fil_string($request->input('serial_num'));
-            $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
-            $price = $this->site_model->fil_string($request->input('price'));
-            $counter_status = $this->site_model->fil_string($request->input('counter_status'));
-            $leasing_rate = $this->site_model->fil_string($request->input('leasing_rate'));
+            $supplier_id = $this->site_model->fil_num($request->input('supplier_id'));
+            $price = $this->site_model->fil_num($request->input('price'));
+            $counter_status = $this->site_model->fil_num($request->input('counter_status'));
+            $leasing_rate = $this->site_model->fil_num($request->input('leasing_rate'));
             $uq_id = $this->site_model->fil_string($request->input('uq_id'));
 
             $date = date("Y-m-d H:i:s");
 
             foreach ($_POST as $key => $val) {
-                if (empty($val)) {
-
+                if (empty($val) AND $key != "counter_status") {
+                    // echo "$key";
+                    // exit();
                     $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields
@@ -94,43 +95,6 @@ class Machines extends Controller
                 exit();
             }
         }
-
-        if(isset($_POST['add_drink'])){
-            $machine_id = $this->site_model->fil_string($request->input('machine_id'));
-            $drink_id = $this->site_model->fil_string($request->input('drink_id'));
-            
-            $date = date("Y-m-d H:i:s");
-
-            $r = DB::select("SELECT * FROM machine_drinks WHERE machine_id='$machine_id' OR drink_id='$drink_id'");
-            if(count($r) > 0){
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                <strong>ERROR: </strong> This Drink is already added to this Machine.
-                            </div>";
-
-                $url = url('/machines');
-                header("Location: $url");
-                exit();
-            }
-            else{
-                $in_data = ['machine_id'=>$machine_id,
-                    'drink_id'=>$drink_id,
-                    'created_at'=>$date,
-                    'created_by'=>$this->staff_id,
-                    ];
-
-                DB::table('machine_drinks')->insert($in_data);
-
-                $_SESSION['notification'] = "<div class='alert alert-callout alert-success alert-dismissable' role='alert'>
-                                <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
-                                SUCESSFULL: Machine Added
-                            </div>";
-                $url = url('/machines');
-                header("Location: $url");
-                exit();
-            }
-        }
-
         
 
         if(isset($_POST['update'])){
@@ -138,17 +102,16 @@ class Machines extends Controller
             $model = $this->site_model->fil_string($request->input('model'));
             $serial_num = $this->site_model->fil_string($request->input('serial_num'));
             $supplier_id = $this->site_model->fil_string($request->input('supplier_id'));
-            $price = $this->site_model->fil_string($request->input('price'));
-            $counter_status = $this->site_model->fil_string($request->input('counter_status'));
-            $leasing_rate = $this->site_model->fil_string($request->input('leasing_rate'));
+            $price = $this->site_model->fil_num($request->input('price'));
+            $counter_status = $this->site_model->fil_num($request->input('counter_status'));
+            $leasing_rate = $this->site_model->fil_num($request->input('leasing_rate'));
             $uq_id = $this->site_model->fil_string($request->input('uq_id'));
             $c_id = $this->site_model->fil_string($request->input('c_id'));
 
             $date = date("Y-m-d H:i:s");
 
             foreach ($_POST as $key => $val) {
-                if (empty($val) OR empty($c_id)) {
-
+                if ((empty($val) OR empty($c_id)) AND $key != "counter_status") {
                     $_SESSION['notification'] = "<div class='alert alert-callout alert-danger alert-dismissable' role='alert'>
                                 <button type='button' class='close' data-dismiss='alert' aria-hidden='true'>x</button>
                                 <strong>ERROR: </strong> Fill the empty fields

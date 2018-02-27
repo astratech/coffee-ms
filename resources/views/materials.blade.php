@@ -11,7 +11,7 @@
                     var d = $(this).data('all');
 
                     $("#editModal [name='c_id']").val(d.id);
-                    $("#editModal [name='name']").val(d.name);
+                    $("#editModal [name='product_list_id']").val(d.product_list_id);
                     $("#editModal [name='supplier_id']").val(d.supplier_id);
                     $("#editModal [name='unit']").val(d.unit);
                     $("#editModal [name='cost']").val(d.cost);
@@ -67,9 +67,9 @@
                         <div class="white-box">
                             <div class="col-in row">
                                 <div class="col-md-6 col-sm-6 col-xs-6"> <i data-icon="E" class="linea-icon linea-basic"></i>
-                                    <h5 class="text-muted vb">Total Number of Materials</h5> </div>
+                                    <h5 class="text-muted vb">Total Products in Store</h5> </div>
                                 <div class="col-md-6 col-sm-6 col-xs-6">
-                                    <h3 class="counter text-right m-t-15 text-danger">{{ count(App\Site::get_records('raw_materials')) }}</h3> </div>
+                                    <h3 class="counter text-right m-t-15 text-danger">{{ count(App\Site::get_records('products')) }}</h3> </div>
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <div class="progress">
                                     
@@ -100,19 +100,20 @@
                         @endif
                         <div class="white-box">
                                                       
-                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Material</a>
+                            <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Record</a>
                             <br>                           
                             <br> 
 
                             <div class="table-responsive">
-                                <table class="table table-borderedb" id="cs-data-table">
+                                <table class="table table-bordered" id="cs-data-table">
                                     <thead>
                                         <tr>
-                                            <th>NAME</th>
-                                            <th>MATERIAL CODE</th>
+                                            <th>PRODUCT CODE</th>
+                                            <th>PRODUCT NAME</th>
                                             <th>SUPPLIER</th>
-                                            <th>QUANTITY</th>
-                                            <th>COST</th>
+                                            <th>QUANTITY PURCHASED</th>
+                                            <th>QUANTITY AVAILABLE</th>
+                                            <th>PURCHASED COST</th>
                                             <th>DATE CREATED</th>
                                             <th>CREATED BY</th>
                                             <th>ACTIONS</th>
@@ -120,14 +121,16 @@
                                     </thead>
                                     <tbody>
 
-                                        @if(count(App\Site::get_records('raw_materials')) > 0)
-                                           @foreach (App\Site::get_records('raw_materials') as $r)
+                                        @if(count(App\Site::get_records('products')) > 0)
+                                           @foreach (App\Site::get_records('products') as $r)
                                                 <tr>
-                                                    <td>{{ $r->name }}</td>
                                                     <td>{{ $r->uq_id }}</td>
-                                                    <td>{{ App\Site::get_record("suppliers", $r->supplier_id)->uq_id }}</td>
-                                                    <td>{{ $r->quantity }}  {{ $r->unit }}</td>
-                                                    <td>{{ $r->cost }}</td>
+                                                    <td>{{ App\Site::get_record("product_list", $r->product_list_id)->name }}</td>
+                                                    <td>{{ App\Site::get_record("suppliers", $r->supplier_id)->uq_id }} - {{ App\Site::get_record("suppliers", $r->supplier_id)->name }}</td>
+                                                    
+                                                    <td> {{ $r->quantity }} {{ App\Site::get_record("product_list", $r->product_list_id)->unit }}</td>
+                                                    <td> {{ App\Site::calc_prod_qty_available($r->id) }} {{ App\Site::get_record("product_list", $r->product_list_id)->unit }}</td>
+                                                    <td>{{ $r->cost }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
                                                     <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>
@@ -141,7 +144,7 @@
                                     </tbody>
                                 </table> 
 
-                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -156,32 +159,20 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Add Raw Material</h4>
+                            <h4 class="modal-title">Add Raw Product</h4>
                         </div>
                         
                         <div class="modal-body">
                             <div class="row">
-                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                <form class="form-horizontal form-Product" method="POST" action="{{ url()->current() }}">
                                     {{ csrf_field() }}
                                     <div class="col-md-12">  
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Name</label>
-                                                <input type="text" name="name" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-6">
-                                                <label>Quantity</label>
-                                                <input type="text" name="quantity" class="form-control">
-                                            </div>
-
-                                            <div class="col-sm-6">
-                                                <label>Unit</label>
-                                                <select name="unit" class="form-control">
-                                                    @foreach (App\Site::get_records('units') as $r)
-                                                        <option value="{{ $r->name }}">{{ $r->name }}</option>
+                                                <label>Select Product</label>
+                                                <select name="product_list_id" class="form-control">
+                                                    @foreach (App\Site::get_records('product_list') as $r)
+                                                        <option value="{{ $r->id }}">{{ $r->name }} - {{ $r->unit }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -189,7 +180,14 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Cost</label>
+                                                <label>Quantity </label>
+                                                <input type="text" name="quantity" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Purchase Cost ({{ App\Site::get_settings("currency")->value }})</label>
                                                 <input type="text" name="cost" class="form-control">
                                             </div>
                                         </div>
@@ -232,31 +230,19 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Edit Material</h4>
+                            <h4 class="modal-title">Edit Product</h4>
                         </div>
                         
                         <div class="modal-body">
                             <div class="row">
-                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                <form class="form-horizontal form-Product" method="POST" action="{{ url()->current() }}">
                                     <div class="col-md-12">                        
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Name</label>
-                                                <input type="text" name="name" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-6">
-                                                <label>Quantity</label>
-                                                <input type="text" name="quantity" class="form-control">
-                                            </div>
-
-                                            <div class="col-sm-6">
-                                                <label>Unit</label>
-                                                <select name="unit" class="form-control">
-                                                    @foreach (App\Site::get_records('units') as $r)
-                                                        <option value="{{ $r->name }}">{{ $r->name }}</option>
+                                                <label>Select Product</label>
+                                                <select name="product_list_id" class="form-control">
+                                                    @foreach (App\Site::get_records('product_list') as $r)
+                                                        <option value="{{ $r->id }}">{{ $r->name }} - {{ $r->unit }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -264,11 +250,18 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Cost</label>
-                                                <input type="text" name="cost" class="form-control">
+                                                <label>Quantity </label>
+                                                <input type="text" name="quantity" class="form-control">
                                             </div>
                                         </div>
 
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Purchase Cost ({{ App\Site::get_settings("currency")->value }})</label>
+                                                <input type="text" name="cost" class="form-control">
+                                            </div>
+                                        </div>
+ 
                                         <div class="form-group">
                                             <div class="col-sm-12">
                                                 <label>Supplier</label>
@@ -279,7 +272,7 @@
                                                 </select>
                                             </div>
                                         </div>
-
+                                            
                                         <div class="form-group">
                                             <div class="col-sm-12">
                                                 <input type="hidden" name="c_id">
@@ -311,12 +304,12 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Delete Machine</h4>
+                            <h4 class="modal-title">Delete Product</h4>
                         </div>
                         
                         <div class="modal-body">
                             <div class="row">
-                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                <form class="form-horizontal form-Product" method="POST" action="{{ url()->current() }}">
                                     <div class="col-md-12">                        
                                        <p>You are about to delete a record <br><br>Are you sure of this?</p>
 

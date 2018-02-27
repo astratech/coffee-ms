@@ -9,7 +9,7 @@
     <meta name="author" content="Astratech NG">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/plugins/images/favicon.png">
-    <title>Coffee-Ms</title>
+    <title>{!! $page_title !!} | Coffee-Ms</title>
     <!-- Bootstrap Core CSS -->
     <link href="{{ URL::asset('site/css/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('site/plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css') }}" rel="stylesheet">
@@ -20,6 +20,10 @@
     <link href="{{ URL::asset('site/css/style.css') }}" rel="stylesheet">
     <link href="{{ URL::asset('site/css/colors/blue-dark.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs/jq-3.2.1/jq-3.2.1/dt-1.10.16/b-1.4.2/b-html5-1.4.2/b-print-1.4.2/kt-2.3.2/r-2.2.0/rr-1.2.3/sl-1.2.3/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.css"/>
+
+
 
      
     
@@ -31,6 +35,7 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/pdfmake.min.js"></script>
     <!-- Custom Theme JavaScript -->
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.js"></script>
 
     <!-- Custom Theme JavaScript -->
     <script src="{{ URL::asset('site/js/site.js') }}"></script>
@@ -47,6 +52,7 @@
     <script src="{{ URL::asset('site/plugins/bower_components/counterup/jquery.counterup.min.js') }}"></script>
     <!--Morris JavaScript -->
     <script src="{{ URL::asset('site/plugins/bower_components/raphael/raphael-min.js') }}"></script>
+    <script src="{{ URL::asset('site/printjs.js') }}"></script>
     
 
    
@@ -81,11 +87,11 @@
             <div class="sidebar-nav navbar-collapse slimscrollsidebar">
                 <ul class="nav" id="side-menu">
                     <li style="padding: 10px 0 0;">
-                        <a href="{{ url('/dashboard') }}" class="waves-effect"><span class="hide-menu">Dashboard</span></a>
+                        <a href="{{ url('/units') }}" class="waves-effect"><span class="hide-menu">Units</span></a>
                     </li>
 
                     <li style="padding: 10px 0 0;">
-                        <a href="{{ url('/units') }}" class="waves-effect"><span class="hide-menu">Units</span></a>
+                        <a href="{{ url('/dashboard') }}" class="waves-effect"><span class="hide-menu">Dashboard</span></a>
                     </li>
 
                     <li style="padding: 10px 0 0;">
@@ -93,16 +99,18 @@
                     </li>
 
                     <li style="padding: 10px 0 0;">
-                        <a href="{{ url('/materials') }}" class="waves-effect"><span class="hide-menu">Materials</span></a>
-                    </li>
-
-                    <li style="padding: 10px 0 0;">
-                        <a href="{{ url('/drinks') }}" class="waves-effect"><span class="hide-menu">Drinks</span></a>
-                    </li>
-
-                    <li style="padding: 10px 0 0;">
                         <a href="{{ url('/customers') }}" class="waves-effect"><span class="hide-menu">Customers</span></a>
                     </li>
+
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/product_list') }}" class="waves-effect"><span class="hide-menu">Product List</span></a>
+                    </li>
+
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/products') }}" class="waves-effect"><span class="hide-menu">Product Store</span></a>
+                    </li>
+
+
 
                     <li style="padding: 10px 0 0;">
 <<<<<<< HEAD:resources/views/header.blade.php
@@ -116,7 +124,17 @@
 >>>>>>> master:resources/views/master.blade.php
                     </li>
 
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/drinks') }}" class="waves-effect"><span class="hide-menu">Drinks</span></a>
+                    </li>
 
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/accounting') }}" class="waves-effect"><span class="hide-menu">Accounting</span></a>
+                    </li>
+
+                    <li style="padding: 10px 0 0;">
+                        <a href="{{ url('/maintenance') }}" class="waves-effect"><span class="hide-menu">Maintenance</span></a>
+                    </li>
 
                 </ul>
             </div>

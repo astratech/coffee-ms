@@ -27,21 +27,6 @@
                 }
             });
 
-            $(".add-drink").click(function (e) {
-                e.preventDefault();
-                try{
-                    var d = $(this).data('all');
-
-                    $("#itemModal [name='machine_id']").val(d.id);
-                    
-                    
-                    $("#itemModal").modal('show');
-                }
-                catch(err){
-                    alert(err);
-                }
-            });
-
             $(".dltBtn").click(function (e) {
                 e.preventDefault();
                 try{
@@ -56,9 +41,7 @@
                 }
             });
 
-            
-
-        });//end ready
+        });//end ready 
 
     </script> 
 @endsection
@@ -134,8 +117,6 @@
                                             <th>PRICE</th>
                                             <th>COUNTER STATUS</th>
                                             <th>LEASING RATE</th>
-                                            <th>ASSIGNED DRINKS</th>
-
                                             <th>DATE CREATED</th>
                                             <th>CREATED BY</th>
                                             <th>ACTIONS</th>
@@ -151,18 +132,10 @@
                                                     <td>{{ $r->model }}</td>
                                                     <td>{{ $r->serial_num }}</td>
                                                     <td>{{ App\Site::get_record("suppliers", $r->supplier_id)->uq_id }}</td>
-                                                    <td>{{ $r->price }}</td>
+                                                    <td>{{ $r->price }} {{ App\Site::get_settings("currency")->value }}</td>
                                                     <td>{{ $r->counter_status }}</td>
-                                                    <td>{{ $r->leasing_rate }}</td>
-                                                    <td>
-                                                        @if(count(DB::select("SELECT * FROM machine_drinks WHERE machine_id='$r->id'")) > 0)
-                                                        @foreach(DB::select("SELECT * FROM machine_drinks WHERE machine_id='$r->id'") as $r)
-                                                               <li>{{  App\Site::get_record("drinks", $r->drink_id)->name }}</li>
-                                                            @endforeach
-                                                            <p>No Drink</p>
-                                                        @endif
-                                                        <p><button class="btn btn-info btn-xs add-drink" data-all="{{ (json_encode($r)) }}">+ Add Drink</button></p>
-                                                    </td>
+                                                    <td>{{ $r->leasing_rate }} {{ App\Site::get_settings("currency")->value }}</td>
+                                                    
                                                     <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
                                                     <td>{{ App\Site::get_record("staffs", $r->created_by)->uq_id }}</td>
                                                     <td>
@@ -239,7 +212,7 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Price</label>
+                                                <label>Price ({{ App\Site::get_settings("currency")->value }})</label>
                                                 <input type="text" name="price" class="form-control">
                                             </div>
                                         </div>
@@ -253,7 +226,7 @@
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Leasing Rate</label>
+                                                <label>Leasing Rate ({{ App\Site::get_settings("currency")->value }})</label>
                                                 <input type="text" name="leasing_rate" class="form-control">
                                             </div>
                                         </div>
@@ -277,56 +250,7 @@
                 </div>
             </div>
 
-            <div id="itemModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <!-- Modal content-->
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Add Drink</h4>
-                        </div>
-                        
-                        <div class="modal-body">
-                            <div class="row">
-                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
-                                    {{ csrf_field() }}
-                                    <div class="col-md-12">  
-                                        
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Drink</label>
-                                                <select name="drink_id" class="form-control">
-                                                    @foreach (App\Site::get_records('drinks') as $r)
-                                                        <option value="{{ $r->id }}">{{ $r->name }} - {{ $r->uq_id }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="hidden" name="machine_id">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="submit" name="add_drink" value="Add Drink" class="btn btn-success">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        </div>
-                        
-                    </div>
-
-                </div>
-            </div>
+            
 
             <div id="editModal" class="modal fade" role="dialog">
                 <div class="modal-dialog">

@@ -1,5 +1,10 @@
 
+<<<<<<< HEAD
      <script type="text/javascript">
+=======
+@section('script')
+    <script type="text/javascript">
+>>>>>>> master
         //Ajax
         $(document).ready(function () {
            
@@ -8,11 +13,9 @@
                 try{
                     var d = $(this).data('all');
 
-                    $("#editModal [name='staff_id']").val(d.id);
-                    $("#editModal [name='name']").val(d.name);
-                    $("#editModal [name='dept']").val(d.dept);
-                    $("#editModal [name='email']").val(d.email);
-                    $("#editModal .modal-title").text("Edit Staff: "+d.uq_id);
+                    $("#editModal [name='customer_id']").val(d.customer_id);
+                    $("#editModal [name='machine_id']").val(d.machine_id);
+                    $("#editModal [name='c_id']").val(d.id);
                     
                     $("#editModal").modal('show');
                 }
@@ -26,25 +29,53 @@
                 try{
                     var d = $(this).data('all');
 
-                    $("#appModal [name='staff_id']").val(d.id);
-                    $("#appModal .modal-title").text("Delete Staff: "+d.uq_id);
-                    
-                    $("#appModal").modal('show');
+                    $("#editModal [name='c_id']").val(d.id);                    
+                    $("#editModal").modal('show');
                 }
                 catch(err){
                     alert(err);
                 }
             });
 
-            $(".change-password").click(function (e) {
+            $(".add-drink").click(function (e) {
                 e.preventDefault();
                 try{
                     var d = $(this).data('all');
 
-                    $("#passModal [name='staff_id']").val(d.id);    
-                    $("#passModal .modal-title").text("Change Staff Password: "+d.uq_id);                
+                    $("#itemModal [name='rent_id']").val(d.id);
                     
-                    $("#passModal").modal('show');
+                    
+                    $("#itemModal").modal('show');
+                }
+                catch(err){
+                    alert(err);
+                }
+            });
+
+            $(".add-product").click(function (e) {
+                e.preventDefault();
+                try{
+                    var d = $(this).data('all');
+
+                    $("#prodModal [name='rent_id']").val(d.id);
+                    
+                    
+                    $("#prodModal").modal('show');
+                }
+                catch(err){
+                    alert(err);
+                }
+            });
+
+            $(".remove-drink").click(function (e) {
+                e.preventDefault();
+                try{
+                    var d = $(this).data('all');
+
+                    $("#removeModal [name='c_id']").val(d.id);
+                    
+                    
+                    $("#removeModal").modal('show');
                 }
                 catch(err){
                     alert(err);
@@ -140,6 +171,177 @@
                 </div>
                 <!-- /.row -->
 
+                <div class="row">
+                    
+                    @if(isset($page_type) AND $page_type == "single")
+                        <div class="col-md-12">
+                            <div class="white-box">
+                                <div class="col-in row">
+                                    <h4>Rents</h4>
+                                
+                                @if(isset($_SESSION['notification']))
+
+                                    {!! $_SESSION['notification'] !!}
+
+                                    @php unset($_SESSION['notification']) @endphp
+
+                                @endif
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="cs-data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>CUSTOMER ID</th>
+                                                <th>MACHINE ID</th>
+                                                <th>ASSIGNED DRINKS</th>
+                                                <th>ASSIGNED PRODUCTS</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @if(count(DB::select("SELECT * FROM rents WHERE id='$rent_id'")) > 0)
+                                               @foreach (DB::select("SELECT * FROM rents WHERE id='$rent_id'") as $r)
+                                                    <tr>
+                                                        <td>{{ $r->uq_id }}</td>
+                                                        <td>
+                                                            <p>{{ App\Site::get_record("customers", $r->customer_id)->uq_id }}</p>
+                                                            <p>{{ App\Site::get_record("customers", $r->customer_id)->name }}</p>
+                                                        </td>
+                                                        
+                                                        <td>{{ App\Site::get_record("machines", $r->machine_id)->uq_id }} <br> {{ App\Site::get_record("machines", $r->machine_id)->model }} </td>
+
+                                                        <td>
+                                                            @if(count(DB::select("SELECT * FROM rent_drinks WHERE rent_id='$r->id'")) > 0)
+                                                                @foreach(DB::select("SELECT * FROM rent_drinks WHERE rent_id='$r->id'") as $d)
+                                                                   <p>- {{  App\Site::get_record("drinks", $d->drink_id)->name }} [{{ $d->cost }} {{ App\Site::get_settings("currency")->value }}]  <button class="btn btn-info btn-xs remove-drink" data-all="{{ (json_encode($d)) }}">X</button></p>
+                                                                @endforeach
+                                                                
+                                                            @else
+                                                                <p>No Drink</p>
+                                                            @endif
+                                                            <p><button class="btn btn-info btn-xs add-drink" data-all="{{ (json_encode($r)) }}">+ Add Drink</button></p>
+                                                        </td>
+                                                        
+                                                        <td>
+                                                            @if(count(DB::select("SELECT * FROM rent_products WHERE rent_id='$r->id'")) > 0)
+                                                                @foreach(DB::select("SELECT * FROM rent_products WHERE rent_id='$r->id'") as $d)
+                                                                   <p>- {{  App\Site::get_record("product_list", App\Site::get_record("products", $d->product_store_id)->product_list_id)->name }} ({{ $d->quantity }} {{  App\Site::get_record("product_list", App\Site::get_record("products", $d->product_store_id)->product_list_id)->unit }})  <button class="btn btn-info btn-xs remove-product" data-all="{{ (json_encode($d)) }}">X</button></p>
+                                                                @endforeach
+                                                                
+                                                            @else
+                                                                <p>No Products</p>
+                                                            @endif
+                                                            <p><button class="btn btn-info btn-xs add-product" data-all="{{ (json_encode($r)) }}">+ Add Product</button></p>
+                                                        </td>
+
+                                                    </tr>
+                                               @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table> 
+
+                                </div>
+     
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="col-md-3">
+                            <div class="white-box">
+                                <div class="col-in row">
+                                    
+                                    <h5>System Settings</h5>
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                        {{ csrf_field() }}
+                                        <div class="col-md-12">                        
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <label>Currency</label>
+                                                    <input type="text" name="currency" class="form-control" value="{{ App\Site::get_settings("currency")->value }}">
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div class="col-sm-12">
+                                                    <input type="submit" name="update_settings" value="Submit" class="btn btn-success">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="white-box">
+                                <div class="col-in row">
+                                    <h4>Rents</h4>
+                                    <a class="btn btn-default" data-toggle="modal" href="#addModal">+ Add New Record</a>
+                                <br>                           
+                                <br> 
+                                @if(isset($_SESSION['notification']))
+
+                                    {!! $_SESSION['notification'] !!}
+
+                                    @php unset($_SESSION['notification']) @endphp
+
+                                @endif
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="cs-data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>CUSTOMER ID</th>
+                                                <th>RENT PERIOD</th>
+                                                <th>RENT PRICE</th>
+                                                <th>MACHINE ID</th>
+                                                
+                                                <th>DATE CREATED</th>
+                                                <th>ACTIONS</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            @if(count(App\Site::get_records('rents')) > 0)
+                                               @foreach (App\Site::get_records('rents') as $r)
+                                                    <tr>
+                                                        <td>{{ $r->uq_id }}</td>
+                                                        <td>
+                                                            <p>{{ App\Site::get_record("customers", $r->customer_id)->uq_id }}</p>
+                                                            <p>{{ App\Site::get_record("customers", $r->customer_id)->name }}</p>
+                                                        </td>
+                                                        <td>{{ date("M d,Y", strtotime($r->date_from)) }} - {{ date("M d,Y", strtotime($r->date_to)) }}</td>
+                                                        <td>{{ $r->price }} {{ App\Site::get_settings("currency")->value }}</td>
+                                                        <td>{{ App\Site::get_record("machines", $r->machine_id)->uq_id }} <br> {{ App\Site::get_record("machines", $r->machine_id)->model }} </td>
+
+
+                                                        <td>{{ is_null($r->created_at) ? '' : date("Y-m-d", strtotime($r->created_at)) }}</td>
+                                                        <td>
+                                                            <a class="btn btn-primary btn-xs" href="{{ url("/dashboard/$r->id") }}" target="_blank">View</a>
+                                                            <a class="btn btn-primary btn-xs" href="{{ url("/invoice/$r->uq_id") }}" target="_blank">Generate Invoice</a>
+                                                            
+                                                            <button class="btn btn-danger btn-sm dltBtn" data-all="{{ (json_encode($r)) }}">Delete</button>
+                                                        </td>
+                                                    </tr>
+                                               @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table> 
+
+                                </div>
+     
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
             </div>
             <!-- /.container-fluid -->
 
@@ -149,7 +351,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Add Staff</h4>
+                            <h4 class="modal-title">Add Record</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -159,29 +361,43 @@
                                     <div class="col-md-12">                        
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Staff Name</label>
-                                                <input type="text" name="name" class="form-control">
+                                                <label>Customer</label>
+                                                <select name="customer_id" class="form-control">
+                                                    @foreach (App\Site::get_records('customers') as $r)
+                                                        <option value="{{ $r->id }}"> {{ $r->name }} - {{ $r->uq_id }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Department</label>
-                                                <input type="text" name="dept" class="form-control">
+                                                <label>Machine</label>
+                                                <select name="machine_id" class="form-control">
+                                                    @foreach (DB::select("SELECT * FROM machines WHERE is_rented='1'") as $r)
+                                                        <option value="{{ $r->id }}">  {{ $r->uq_id }} - {{ $r->model }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Email</label>
-                                                <input type="text" name="email" class="form-control">
+                                            <div class="col-md-6">
+                                               <label>Rent Begins</label> 
+                                               <input type="text" name="date_from" class="form-control" data-provide="datepicker">
                                             </div>
+
+                                             <div class="col-md-6">
+                                               <label>Rent Ends</label> 
+                                               <input type="text" name="date_to" class="form-control" data-provide="datepicker">
+                                            </div>
+                                            
                                         </div>
 
                                         <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Password</label>
-                                                <input type="text" name="password" class="form-control" value="{{ App\Site::gen_token() }}" readonly>
+                                            <div class="col-md-12">
+                                               <label>Rent Price</label> 
+                                               <input type="number" name="price" class="form-control">
                                             </div>
                                         </div>
 
@@ -209,44 +425,25 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Edit Staff</h4>
+                            <h4 class="modal-title">Delete Record</h4>
                         </div>
                         
                         <div class="modal-body">
                             <div class="row">
                                 <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
                                     <div class="col-md-12">                        
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Staff Name</label>
-                                                <input type="text" name="name" class="form-control">
-                                            </div>
-                                        </div>
+                                       <p>You are about to delete a record <br><br>Are you sure of this?</p>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>Department</label>
-                                                <input type="text" name="dept" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Email</label>
-                                                <input type="text" name="email" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="hidden" name="staff_id">
+                                                <input type="hidden" name="c_id">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="submit" name="update" value="Update Details" class="btn btn-success">
+                                                <input type="submit" name="delete" value="Delete" class="btn btn-success">
                                             </div>
                                         </div>
                                     </div>
@@ -262,44 +459,31 @@
                 </div>
             </div>
 
-            <div id="passModal" class="modal fade" role="dialog">
+            <div id="removeModal" class="modal fade" role="dialog">
                 <div class="modal-dialog">
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Change Staff Password</h4>
+                            <h4 class="modal-title">Delete Drink Record</h4>
                         </div>
                         
                         <div class="modal-body">
                             <div class="row">
                                 <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
                                     <div class="col-md-12">                        
+                                       <p>You are about to delete a record <br><br>Are you sure of this?</p>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <label>New Password</label>
-                                                <input type="password" name="password" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <label>Retype New Password</label>
-                                                <input type="password" name="rpassword" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="col-sm-12">
-                                                <input type="hidden" name="staff_id">
+                                                <input type="hidden" name="c_id">
                                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="submit" name="update_password" value="Change Password" class="btn btn-success">
+                                                <input type="submit" name="delete_drink" value="Delete" class="btn btn-success">
                                             </div>
                                         </div>
                                     </div>
@@ -315,30 +499,49 @@
                 </div>
             </div>
 
-            <div id="appModal" class="modal fade" role="dialog">
+            <div id="itemModal" class="modal fade" role="dialog">
                 <div class="modal-dialog">
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Delete Staff</h4>
+                            <h4 class="modal-title">Add Drink</h4>
                         </div>
                         
                         <div class="modal-body">
                             <div class="row">
                                 <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
-                                    <div class="col-md-12">                        
-                                    <p>You are about to delete a record <br><br>Are you sure of this?</p>
+                                    {{ csrf_field() }}
+                                    <div class="col-md-12">  
+                                        
+
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="hidden" name="staff_id">
-                                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                                <label>Drink</label>
+                                                <select name="drink_id" class="form-control">
+                                                    @foreach (App\Site::get_records('drinks') as $r)
+                                                        <option value="{{ $r->id }}">{{ $r->name }} - {{ $r->uq_id }}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="col-sm-12">
-                                                <input type="submit" name="delete" value="Delete Staff" class="btn btn-success">
+                                                <label>Cost Per Drink</label>
+                                                <input type="number" name="cost" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="hidden" name="rent_id">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="submit" name="add_drink" value="Add Drink" class="btn btn-success">
                                             </div>
                                         </div>
                                     </div>
@@ -353,3 +556,67 @@
 
                 </div>
             </div>
+
+            <div id="prodModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Add Product</h4>
+                        </div>
+                        
+                        <div class="modal-body">
+                            <div class="row">
+                                <form class="form-horizontal form-material" method="POST" action="{{ url()->current() }}">
+                                    {{ csrf_field() }}
+                                    <div class="col-md-12">  
+                                        
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Select Product</label>
+                                                <select name="product_id" class="form-control">
+                                                    @foreach (App\Site::get_records('products') as $r)
+                                                        <option value="{{ $r->id }}">{{ $r->uq_id }} {{ App\Site::get_record('product_list', $r->product_list_id)->name }} - {{ App\Site::calc_prod_qty_available($r->id) }} {{ App\Site::get_record('product_list', $r->product_list_id)->unit }} Available</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <label>Quantity</label>
+                                                <input type="number" name="quantity" class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="hidden" name="rent_id">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-12">
+                                                <input type="submit" name="add_product" value="Add Product" class="btn btn-success">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                        
+                    </div>
+
+                </div>
+            </div>
+<<<<<<< HEAD
+=======
+
+
+@endsection
+>>>>>>> master
